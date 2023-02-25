@@ -5,7 +5,11 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
+<<<<<<< HEAD
 install.packages("learnr", repos="http://cran.us.r-project.org")
+=======
+install.packages("learnr", repos = "http://cran.us.r-project.org")
+>>>>>>> 3cd3be0a1b5a8cb3434005a791dae1948b80b8af
 library(learnr)
 knitr::opts_chunk$set(echo=FALSE)
 ```
@@ -1854,7 +1858,11 @@ DATA <- data.frame(X,Y)
 ggplot(data=DATA, aes(x=X, y=Y)) +
   geom_point(size=5) +
   labs(title="Plot 1") + 
+<<<<<<< HEAD
   theme(plot.title=element_text(size=20, color=blue)
+=======
+  theme(plot.title=element_text(size=20, color=black)
+>>>>>>> 3cd3be0a1b5a8cb3434005a791dae1948b80b8af
 ```
 
 ## Practice 1
