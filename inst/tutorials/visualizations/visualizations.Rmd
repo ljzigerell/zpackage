@@ -5,6 +5,7 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
+install.packages("learnr", repos="http://cran.us.r-project.org")
 library(learnr)
 knitr::opts_chunk$set(echo=FALSE)
 ```
@@ -13,7 +14,7 @@ knitr::opts_chunk$set(echo=FALSE)
 
 Let's get data for two variables (X and Y). Let's use the combine function (c) to combine numbers, and then use the assign function (<-) to assign those numbers to X and Y. Then let's plot a scatterplot of X and Y:
 
-```{r base1, exercise=TRUE, exercise.lines=4}
+```{r base1, exercise=TRUE, exercise.lines=4, fig.width=8, fig.height=4}
 
 X <- c(1,2,3,4,5)
 Y <- c(4,5,8,9,7)
@@ -35,7 +36,7 @@ question("Which one of the following would be returned by: c(4,8)?",
 
 Let's add a few features to the plot, such as points that are larger and are colored:
 
-```{r base2, exercise=TRUE, exercise.lines=4}
+```{r base2, exercise=TRUE, exercise.lines=4, fig.width=8, fig.height=4}
 
 X <- c(1,2,3,4,5)
 Y <- c(4,5,8,9,7)
@@ -49,16 +50,20 @@ This is an example of plotting with the base functions of R that are available w
 
 One of the packages that can go beyond the base R functions is called the **tidyverse**, which is useful for visualizing data.
 
-First, R packages must be put on your computer using a command such as **install.packages("tidyverse")**, which will download the **tidyverse** package to your computer.
+First, R packages must be put on your computer using a command such as **install.packages("tidyverse")** or **install.packages("tidyverse", dependencies=TRUE, repos="http://cran.us.r-project.org")**, which will download the **tidyverse** package to your computer.
 
-```{r tidyverse_install, eval=FALSE, exercise=FALSE, message=TRUE, warning=TRUE}
-install.packages("tidyverse")
+```{r tidyverse_install, eval=TRUE, exercise=FALSE, message=TRUE, warning=TRUE}
+
+install.packages("tidyverse", repos="http://cran.us.r-project.org")
+
 ```
 
 Once a package's files are on your computer, the package can be loaded into a working session of R using the **library** command. The output from **library(tidyverse)** below should indicate that tidyverse packages such as **ggplot2**, **tibble**, and **stringr** have been attached. The output should also indicate conflicts involving functions with the same name in which one function masks (hides) another function.
 
 ```{r tidyverse_library, exercise=FALSE, message=TRUE, warning=TRUE}
+
 library(tidyverse)
+
 ```
 
 ## Getting data into R
@@ -67,7 +72,7 @@ Let's get data that we can plot. One way to get data into R is through a **tribb
 
 Click the Run Code button below to build the GUNIMP dataset and print the GUNIMP dataset.
 
-```{r tibble_GUNIMP, exercise=TRUE, exercise.lines=14, message=FALSE, warning=FALSE}
+```{r tibble_GUNIMP, message=FALSE, warning=FALSE, exercise=TRUE, exercise.lines=14, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -111,7 +116,7 @@ read.csv(G:/plots/file.csv)
 
 Now, let's start the visualization using the **ggplot** function. The first line of the ggplot code will tell ggplot which data to use and which variables are to be on the x-axis and the y-axis. Click the Run Code button below to see the setup that this ggplot code will produce:
 
-```{r GUNIMP_ggplot_1A, exercise=TRUE, exercise.lines=14}
+```{r GUNIMP_ggplot_1A, exercise=TRUE, exercise.lines=14, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -151,7 +156,7 @@ question("Which one of the following is used to start a new line of text?",
 
 Now, let's add columns to the plot. The new line below involves **geom_col**, but other geoms are available such as **geom_point** and **geom_rect**. Note that the code below connects the two ggplot commands with a plus sign. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_2A, exercise=TRUE, exercise.lines=15}
+```{r GUNIMP_ggplot_2A, exercise=TRUE, exercise.lines=15, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -176,7 +181,7 @@ Note that, for the column geom, the columns start at zero.
 
 Options can be added to commands, like below with size, width, color, and fill for the geom_col command. For geom_col, "size" is for the thickness of the outline of the column, and "width" is for the width of a column. For a geom that is filled, "color" is for the outer edge of the geom, and "fill" is for the inside of the geom. The **rep.int** function tells R to repeat [the first thing in parentheses] for [the second thing in parentheses] number of times, so that, for example, **rep.int("blue3",2)** returns **"blue3", "blue3"**. The **c()** function combines elements, so that, for example, **c(1,4)** would return **1 4**. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_2B, exercise=TRUE, exercise.lines=16}
+```{r GUNIMP_ggplot_2B, exercise=TRUE, exercise.lines=16, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -200,7 +205,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 Here is equivalent code using the geom for points. Click the Run Code button below, and note that the y-axis reverts to merely fitting the data instead of starting at zero:
 
-```{r GUNIMP_ggplot_2C, exercise=TRUE, exercise.lines=16}
+```{r GUNIMP_ggplot_2C, exercise=TRUE, exercise.lines=16, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -224,7 +229,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 Let's add error bars to indicate the uncertainty in the point estimates. First, let's put the error bar line before the geom_col() line, to illustrate how ggplot layers lines of code, with, in this case, the error bars plotted first with the points plotted on top of the error bars. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_2D, exercise=TRUE, exercise.lines=17}
+```{r GUNIMP_ggplot_2D, exercise=TRUE, exercise.lines=17, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -249,7 +254,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 But let's put the error bars on top of the points. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_2E, exercise=TRUE, exercise.lines=17}
+```{r GUNIMP_ggplot_2E, exercise=TRUE, exercise.lines=17, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -296,7 +301,7 @@ question("Which one of the following would be returned by: rep.int(4,2)?",
 
 Below, insert code that will create a ggplot plot, using the STATES dataset, with PERPUPIL on the x-axis (state per pupil spending, measured in 2016) and NAEP8MATH on the y-axis (state average math score in 8th grade), with points plotted for each state, using the **geom_point()** geom. Then click the Run Code button:
 
-```{r STATES1, exercise=TRUE, exercise.lines=40}
+```{r STATES1, exercise=TRUE, exercise.lines=40, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -359,7 +364,7 @@ getwd()
 
 The command **openFile** in the package **PBSmodelling** can be used to automatically open a file, such as the code below, if there is an available D drive:
 
-```{r ggsave, exercise=TRUE, exercise.lines=23, message=FALSE, warning=FALSE}
+```{r ggsave, exercise=TRUE, exercise.lines=23, message=FALSE, warning=FALSE, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -379,7 +384,8 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 ggsave("D:R plot gunIMP.pdf", width=8, height=6)
 getwd()
 
-library("PBSmodelling")
+install.packages("PBSmodelling", repos="http://cran.us.r-project.org")
+library(PBSmodelling)
 openFile("D:R plot gunIMP.pdf")
 ```
 
@@ -391,7 +397,7 @@ R permits multiple datasets to be loaded at once per session, so the \$ is a way
 
 For this plot, let's go back to columns. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_3A, exercise=TRUE, exercise.lines=19}
+```{r GUNIMP_ggplot_3A, exercise=TRUE, exercise.lines=19, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -438,7 +444,7 @@ question("Which one of the following can be used to reorder the elements of a ch
 
 ggplot2 has certain defaults about how far to extend axes. You might have noticed that the y-axis extended farther after the error bars were added, compared to when only the columns were plotted. Often for plotting percentages, it makes sense to plot the full range of possible percentages, such as from 0 to 100 (for plotting percentages) or from 0 to 1 (for plotting decimal percentages). Let's tell ggplot to do that. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_4A, exercise=TRUE, exercise.lines=20}
+```{r GUNIMP_ggplot_4A, exercise=TRUE, exercise.lines=20, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -466,7 +472,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 The expand option can remove or add buffer space around the plot. Let's get rid of the buffer space on the y-axis by setting **expand** to **expand=c(0,0)**. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_4B, exercise=TRUE, exercise.lines=20}
+```{r GUNIMP_ggplot_4B, exercise=TRUE, exercise.lines=20, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -494,7 +500,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 Let's tell ggplot2 where to place the axis labels, using a sequence function **seq** that tells ggplot to start at the first number, keep adding the third number, and stop when you reach the second number. In this case, **seq(0,1,0.2)** will return 0 to start, return new numbers every additional 0.2, and then stop at 1. The second number might or might not be the final number. For example, **seq(0,0.3,0.2)** would return only 0 and 0.2. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_4C, exercise=TRUE, exercise.lines=20}
+```{r GUNIMP_ggplot_4C, exercise=TRUE, exercise.lines=20, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -522,7 +528,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 The three parts of the sequence function can be thought of as "from", "to", and "by", and R will assume as a default that three numbers in a sequence function are intended to indicate the "from", "to", and "by" arguments. But the arguments can be made explicit and in a different order, such as below, with **seq(from=0, by=0.2, to=1)**. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_4D, exercise=TRUE, exercise.lines=20}
+```{r GUNIMP_ggplot_4D, exercise=TRUE, exercise.lines=20, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -550,7 +556,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 If an axis has breaks but no labels indicated, ggplot uses the corresponding numbers as labels. But other values -- including non-numeric values -- can be assigned as labels. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_4E, exercise=TRUE, exercise.lines=21}
+```{r GUNIMP_ggplot_4E, exercise=TRUE, exercise.lines=21, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -579,7 +585,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 A secondary axis can be added to the other side of the plot. Let's use a simple duplicate y-axis for now, but it is possible to have a different secondary axis so that, for instance, one side has labels in counts and another side has labels in percentages. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_4F, exercise=TRUE, exercise.lines=20}
+```{r GUNIMP_ggplot_4F, exercise=TRUE, exercise.lines=20, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -640,7 +646,7 @@ question("Suppose that a ggplot axis command for a continuous vector indicates t
 
 Let's add a title. Notice that we need to put a slash before internal quotation marks, so that ggplot doesn't get fooled into thinking that the title stops at the first internal quotation mark. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_5A, exercise=TRUE, exercise.lines=21}
+```{r GUNIMP_ggplot_5A, exercise=TRUE, exercise.lines=21, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -669,7 +675,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 That title is long, so let's break the title into two lines, using \\n to tell ggplot to start a new line. Let's also add a caption. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_5B, exercise=TRUE, exercise.lines=21}
+```{r GUNIMP_ggplot_5B, exercise=TRUE, exercise.lines=21, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -698,7 +704,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 That caption is really long. Instead of breaking it into several lines using \n, let's use the **str_wrap** function. I'll also move the caption outside of the main plot code, and then call the caption in the code. The 100 width inside the str_wrap function is the width of the lines in number of characters. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_5C, exercise=TRUE, exercise.lines=27}
+```{r GUNIMP_ggplot_5C, exercise=TRUE, exercise.lines=27, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -757,7 +763,7 @@ question("Which one of the following can be used to keep the width of a text str
 
 Let's add the point estimates above the columns. The **hjust** values of 0, 0.5, and 1 are respectively for left, center, and right justification. The **vjust** values of 0, 0.5, and 1 are respectively for bottom, middle, and top justification. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_6A, exercise=TRUE, exercise.lines=28}
+```{r GUNIMP_ggplot_6A, exercise=TRUE, exercise.lines=28, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -793,7 +799,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 Let's get the point estimates to be percentages rounded to the nearest whole number (accuracy=1). Click the Run Code button below:
 
-```{r GUNIMP_ggplot_6B, exercise=TRUE, exercise.lines=28}
+```{r GUNIMP_ggplot_6B, exercise=TRUE, exercise.lines=28, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -857,7 +863,7 @@ question("Which one of the following is the number used for bottom justification
 
 Let's edit some non-data **theme** elements of the plot. First, let's remove elements that aren't needed, such as the y-axis title (PE), the x-axis title (PID), the tick marks, the grid lines, and the y-axis labels. For removing theme elements, indicate the thing to change and then list it as **element_blank()**. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_7A, exercise=TRUE, exercise.lines=38}
+```{r GUNIMP_ggplot_7A, exercise=TRUE, exercise.lines=38, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -903,7 +909,7 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
 
 Now, let add in theme elements that involve changes that we want to see, such as larger text, darker text, and a border. Click the Run Code button below:
 
-```{r GUNIMP_ggplot_7B, exercise=TRUE, exercise.lines=45}
+```{r GUNIMP_ggplot_7B, exercise=TRUE, exercise.lines=45, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -983,7 +989,7 @@ Facets can be used to plot multiple panels for the same plot. The data below are
 
 Click the Run Code button below:
 
-```{r NRA1, exercise=TRUE, exercise.lines=30}
+```{r NRA1, exercise=TRUE, exercise.lines=30, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1020,7 +1026,7 @@ ggplot(NRA, aes(PE, RACE)) +
 
 Notice that a flaw in the above plot is that it's difficult to compare liberals of one race to conservatives of the same race. But those comparisons can be easier to make if we change the facet_wrap to be horizontal, by changing the directions to be 1 column instead of 1 row. Click the Run Code button below:
 
-```{r NRA2, exercise=TRUE, exercise.lines=30}
+```{r NRA2, exercise=TRUE, exercise.lines=30, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1057,7 +1063,7 @@ ggplot(NRA, aes(PE, RACE)) +
 
 And notice how relatively easy it is to swap an axis and a facet. The only changes in the code below are [1] to change the Y variable to IDEO, change the facet variable to RACE, and [3] change the number of columns to 2. 
 
-```{r NRA3, exercise=TRUE, exercise.lines=30}
+```{r NRA3, exercise=TRUE, exercise.lines=30, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1094,7 +1100,7 @@ ggplot(NRA, aes(PE, IDEO)) +
 
 Below is an example of a line of code (starting with "geom_rect") that can be used to add an element to a particular facet:
 
-```{r NRA4, exercise=TRUE, exercise.lines=32}
+```{r NRA4, exercise=TRUE, exercise.lines=32, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1146,7 +1152,7 @@ question("Which one of the following can be used to produce multiple panels for 
 
 Let's draw a linear regression line through a set of 50 points, each representing a state in the United States, on a x-axis that is an estimate of the percentage of state residents that identify as LGBT and a y-axis that is the percentage of the vote that Donald Trump received in the state in the 2016 U.S. presidential election. Click the Run Code button below:
 
-```{r TRUMP1, exercise=TRUE, exercise.lines=24}
+```{r TRUMP1, exercise=TRUE, exercise.lines=24, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1178,7 +1184,7 @@ ggplot(data=TRUMP, aes(x=LGBT, y=PCTTRUMP)) +
 
 Let's shut off the confidence interval, replace the points with state abbreviations, and put the state abbreviations on top of the linear regression line. Click the Run Code button below:
 
-```{r TRUMP2, exercise=TRUE, exercise.lines=25}
+```{r TRUMP2, exercise=TRUE, exercise.lines=25, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1224,7 +1230,7 @@ question("Which one of the following will produce a linear regression line?",
 
 Let's plot on the y-axis the percentage LGBT in a state and on the x-axis whether at least half of votes in the state went to Donald Trump in the 2016 U.S. presidential election. Click the Run Code button below:
 
-```{r JITTER1, exercise=TRUE, exercise.lines=27}
+```{r JITTER1, exercise=TRUE, exercise.lines=27, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1259,7 +1265,7 @@ ggplot(data=TRUMP, aes(x=TRUMP50, y=LGBT)) +
 
 The above plot is flawed because some of the points are on top of each other and thus the plot might not accurately indicate the relative number of points in each column or the location of the points. But we can adjust this with a jitter. Click the Run Code button below:
 
-```{r JITTER2, exercise=TRUE, exercise.lines=27}
+```{r JITTER2, exercise=TRUE, exercise.lines=27, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1292,7 +1298,7 @@ ggplot(data=TRUMP, aes(x=TRUMP50, y=LGBT)) +
 
 The h and w indicate the height and width of the jitter, and the seed is used if we want the jitter to be the same each time we run the code. Not setting a seed means that the jitter will be randomized each time the code is run, like below, for which you can click Run Code multiple times:
 
-```{r JITTER3, exercise=TRUE, exercise.lines=27}
+```{r JITTER3, exercise=TRUE, exercise.lines=27, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1327,7 +1333,7 @@ ggplot(data=TRUMP, aes(x=TRUMP50, y=LGBT)) +
 
 The **patchwork** package can be used to plot multiple different plots in the same plot. As indicated below, we can assign each plot to an object ("p.total <-") and then plot these objects. The "p.histogram / (p.total + p.26)" line tells patchwork to put the p.histogram plot on top and the p.total and p.26 plots on the bottom. Click the Run Code button below:
 
-```{r PATCHWORK, exercise=TRUE, exercise.lines=53}
+```{r PATCHWORK, exercise=TRUE, exercise.lines=53, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1377,6 +1383,7 @@ p.26 <- ggplot(data=DATA, aes(x=PAY26, y=WINPCT)) +
 p.histogram <- ggplot(data=DATA, aes(x=WINPCT)) +
   geom_histogram(color="black", fill="blue3")
 
+install.packages("patchwork", repos="http://cran.us.r-project.org")
 library(patchwork)
 
 p.histogram / (p.total + p.26) +
@@ -1388,7 +1395,7 @@ p.histogram / (p.total + p.26) +
 
 The geom_col() command below tells ggplot to plot columns. The columns will be filled with colors, so ggplot2 will add a legend to the plot. Click the Run Code button below:
 
-```{r LEGEND1, exercise=TRUE, exercise.lines=35}
+```{r LEGEND1, exercise=TRUE, exercise.lines=35, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1431,7 +1438,7 @@ ggplot(data=DATA, aes(x=100*PCT, y=RACE, fill=PARTY)) +
 
 The theme code below for legend.position tells ggplot to put the legend at the bottom of the plot, and the **guides** command tells ggplot to do a few things, such as put all of the legend in one row. Click the Run Code button below:
 
-```{r LEGEND2, exercise=TRUE, exercise.lines=37}
+```{r LEGEND2, exercise=TRUE, exercise.lines=37, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1480,9 +1487,7 @@ By the way, the above plot has the plot region range from Democrat > Independent
 
 The two plots below illustrate how the emphasis can be changed for the same data by switching the facet variable. The first plot has facets based on race, which emphasizes the difference across age groups. The second plot has facets by age, which emphasizes the difference across racial groups. 
 
-```{r emphasis1, echo=FALSE, exercise=FALSE, eval=TRUE, results=FALSE, fig.width=8, fig.height=4}
-
-learnr::initialize_tutorial()
+```{r emphasis1, echo=FALSE, exercise=TRUE, eval=TRUE, results=FALSE, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1624,9 +1629,7 @@ ggplot(DATA, aes(x=RACE, y=100*PCT, fill=ITEM)) +
 
 This next set of plots indicates how shading can be used to draw attention to the pattern that you want readers to focus on:
 
-```{r emphasis2, echo=FALSE, exercise=FALSE, eval=TRUE, results=FALSE, fig.width=8, fig.height=5}
-
-learnr::initialize_tutorial()
+```{r emphasis2, echo=FALSE, exercise=TRUE, eval=TRUE, results=FALSE, fig.width=8, fig.height=5}
 
 library(tidyverse)
 
@@ -1828,24 +1831,30 @@ ggplot(data=DATA, aes(X,Y))
 
 library(tidyverse)
 
-DATA <- tribble(~X, ~Y, "A", 8, "B", 20, "C", 10, "D", 5)
+DATA <- tribble(~X, ~Y, "A", 8, "B", 20, "C", 10, "D, 5)
 
 ggplot(data=DATA, aes(x=X, y=Y)) +
   geom_col() +
   labs(title="Plot 1") + 
-  theme()
-    plot.title= element_text(size=20, margin=margin(t=0,b=15)
+  theme(
+    plot.title=element_text(size=20, margin=margin(t=0,b=15)
        )
 ```
 
-3. Edit the code below so that the x-axis order from left-to-right is "Male" "Female". Do not change the DATA line.
+3. Fix the code below:
 
-```{r trouble3, exercise=TRUE, exercise.lines=10}
+```{r trouble3, exercise=TRUE, exercise.lines=12}
 
-DATA <- tribble(~X, ~Y, "Male", 40, "Female", 60)
+library(tidyverse)
 
-ggplot(data=DATA, aes(x=X, y=Y, fill=X)) +
-  geom_col() 
+X    <- c(0:5)
+Y    <- seq(0,25,5)
+DATA <- data.frame(X,Y)
+
+ggplot(data=DATA, aes(x=X, y=Y)) +
+  geom_point(size=5) +
+  labs(title="Plot 1") + 
+  theme(plot.title=element_text(size=20, color=blue)
 ```
 
 ## Practice 1
@@ -1874,7 +1883,7 @@ For the plot below, see whether you can do each of the following:
 6. Outline the edge of the columns in black.
 7. Remove the ticks on the x-axis.
 
-```{r practice2, exercise=TRUE, exercise.lines=23}
+```{r practice2, exercise=TRUE, exercise.lines=23, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
@@ -1904,7 +1913,7 @@ ggplot(DATA, aes(PARTY, PCT, fill=GENDER)) +
 
 Plot the data below, which are mean ratings about feminists on a 0-to-100 scale, among the indicated groups. Plot the data separated into facets. Consider whether this faceting is better by gender or by party, and consider whether this faceting is better horizontal or vertical. Include a title indicating the topic of the data and a caption indicating the data source, which is the ANES 2020 Time Series Study.
 
-```{r practice3, exercise=TRUE, exercise.lines=50}
+```{r practice3, exercise=TRUE, exercise.lines=50, fig.width=8, fig.height=4}
 
 library(tidyverse)
 
