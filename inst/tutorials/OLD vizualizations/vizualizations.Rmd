@@ -1,0 +1,1923 @@
+---
+title: "visualizations"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo=FALSE)
+```
+
+## Basic plots in base R
+
+Let's get data for two variables (X and Y). Let's use the combine function (c) to combine numbers, and then use the assign function (<-) to assign those numbers to X and Y. Then let's plot a scatterplot of X and Y:
+
+```{r base1, exercise=TRUE, exercise.lines=4}
+
+X <- c(1,2,3,4,5)
+Y <- c(4,5,8,9,7)
+plot(X,Y)
+
+```
+
+```{r review_base, echo=FALSE, exercise=FALSE}
+question("Which one of the following would be returned by: c(4,8)?",
+  answer("4 5 6 7 8"),
+  answer("4 8", correct=TRUE),
+  answer("4 4 4 4 4 4 4 4"),
+  answer("32"),
+  allow_retry=TRUE
+)
+```
+
+---
+
+Let's add a few features to the plot, such as points that are larger and are colored:
+
+```{r base2, exercise=TRUE, exercise.lines=4}
+
+X <- c(1,2,3,4,5)
+Y <- c(4,5,8,9,7)
+plot(X, Y, pch=21, bg="lightblue", col="blue4", cex=4, lwd=2.5)
+
+```
+
+This is an example of plotting with the base functions of R that are available when a session of R is opened. But packages of functions can be added to base R...
+
+## Loading the tidyverse package
+
+One of the packages that can go beyond the base R functions is called the **tidyverse**, which is useful for visualizing data.
+
+First, R packages must be put on your computer using a command such as **install.packages("tidyverse")**, which will download the **tidyverse** package to your computer.
+
+```{r tidyverse_install, eval=FALSE, exercise=FALSE, message=TRUE, warning=TRUE}
+install.packages("tidyverse")
+```
+
+Once a package's files are on your computer, the package can be loaded into a working session of R using the **library** command. The output from **library(tidyverse)** below should indicate that tidyverse packages such as **ggplot2**, **tibble**, and **stringr** have been attached. The output should also indicate conflicts involving functions with the same name in which one function masks (hides) another function.
+
+```{r tidyverse_library, exercise=FALSE, message=TRUE, warning=TRUE}
+library(tidyverse)
+```
+
+## Getting data into R
+
+Let's get data that we can plot. One way to get data into R is through a **tribble** function from the tidyverse. The setup is to use a tilde (~) to indicate column headers and then indicate the data in the columns. The tribble code below has four columns: PID (for party identification), PE (a point estimate "best guess" for the observed frequency, which in this case is the predicted probability of a respondent selecting "extremely important" to indicate how important the respondent considers the issue of the federal gun laws), and CILO and CIHI (the low and high ends of confidence intervals that provide an estimate of the uncertainty in the point estimate). The assignment operator **<-** assigns these data to a dataset called GUNIMP.
+
+Click the Run Code button below to build the GUNIMP dataset and print the GUNIMP dataset.
+
+```{r tibble_GUNIMP, exercise=TRUE, exercise.lines=14, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP
+
+```
+
+---
+
+Other methods for getting data into R include functions such as **read.csv** for csv files, using code such as...
+
+```{r open1, eval=FALSE, exercise=FALSE}
+read.csv(file.choose())
+```
+
+...to open a dialog box so that you can navigate to the file. Or code such as:
+
+```{r open2, eval=FALSE, exercise=FALSE}
+read.csv(file.csv)
+```
+
+...which would open the file named "file.csv" in the working directory. Or code such as:
+
+```{r open3, eval=FALSE, exercise=FALSE}
+read.csv(G:/plots/file.csv)
+```
+
+...which would open the file named "file.csv" in the G:/plots directory.
+
+## Setting up a ggplot
+
+Now, let's start the visualization using the **ggplot** function. The first line of the ggplot code will tell ggplot which data to use and which variables are to be on the x-axis and the y-axis. Click the Run Code button below to see the setup that this ggplot code will produce:
+
+```{r GUNIMP_ggplot_1A, exercise=TRUE, exercise.lines=14}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE))
+
+```
+
+Notice that the **\\n** in the PID text inserts a line break in the text.
+
+Note also that ggplot defaults to axes that fit the data assigned to x and y. For example, the range of the y-axis is just enough to fit the low PE value of 0.2074255 and to fit the high PE value of 0.4445886.
+
+---
+
+### Exercises
+
+```{r review-n, echo=FALSE, exercise=FALSE}
+question("Which one of the following is used to start a new line of text?",
+  answer("\\1"),
+  answer("\\b"),
+  answer("\\n", correct=TRUE),
+  answer("\\t"),
+  allow_retry=TRUE
+)
+```
+
+## Geoms
+
+Now, let's add columns to the plot. The new line below involves **geom_col**, but other geoms are available such as **geom_point** and **geom_rect**. Note that the code below connects the two ggplot commands with a plus sign. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_2A, exercise=TRUE, exercise.lines=15}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col()
+
+```
+
+Note that, for the column geom, the columns start at zero. 
+
+---
+
+Options can be added to commands, like below with size, width, color, and fill for the geom_col command. For geom_col, "size" is for the thickness of the outline of the column, and "width" is for the width of a column. For a geom that is filled, "color" is for the outer edge of the geom, and "fill" is for the inside of the geom. The **rep.int** function tells R to repeat [the first thing in parentheses] for [the second thing in parentheses] number of times, so that, for example, **rep.int("blue3",2)** returns **"blue3", "blue3"**. The **c()** function combines elements, so that, for example, **c(1,4)** would return **1 4**. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_2B, exercise=TRUE, exercise.lines=16}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2)))
+
+```
+
+---
+
+Here is equivalent code using the geom for points. Click the Run Code button below, and note that the y-axis reverts to merely fitting the data instead of starting at zero:
+
+```{r GUNIMP_ggplot_2C, exercise=TRUE, exercise.lines=16}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_point(size=5, shape=21, color="black", 
+             fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2)))
+
+```
+
+---
+
+Let's add error bars to indicate the uncertainty in the point estimates. First, let's put the error bar line before the geom_col() line, to illustrate how ggplot layers lines of code, with, in this case, the error bars plotted first with the points plotted on top of the error bars. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_2D, exercise=TRUE, exercise.lines=17}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25, color="orange") +
+  geom_point(size=5, shape=21, color="black", 
+             fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2)))
+
+```
+
+---
+
+But let's put the error bars on top of the points. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_2E, exercise=TRUE, exercise.lines=17}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_point(size=5, shape=21, color="black", 
+             fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25, color="orange") 
+
+```
+
+---
+
+### Exercises
+
+```{r review-plus, echo=FALSE, exercise=FALSE}
+question("Which symbol is used to connect ggplot lines?",
+  answer("an ampersand (&)"),
+  answer("a pipe bar (|)"),
+  answer("a plus sign (+)", correct=TRUE),
+  answer("an asterisk (*)"),
+  allow_retry=TRUE
+)
+```
+
+```{r review-repint1, echo=FALSE, exercise=FALSE}
+question("Which one of the following would be returned by: rep.int(4,2)?",
+  answer("4 4", correct=TRUE),
+  answer("2 2 2 2"),
+  answer("8"),
+  answer("4 6"),
+  allow_retry=TRUE
+)
+```
+
+Below, insert code that will create a ggplot plot, using the STATES dataset, with PERPUPIL on the x-axis (state per pupil spending, measured in 2016) and NAEP8MATH on the y-axis (state average math score in 8th grade), with points plotted for each state, using the **geom_point()** geom. Then click the Run Code button:
+
+```{r STATES1, exercise=TRUE, exercise.lines=40}
+
+library(tidyverse)
+
+STATES <- tribble(
+  ~STATE,~STATEAB, ~REGION, ~PERPUPIL, ~NAEP8MATH, ~NAEP8READ, ~POVERTY,
+  "Alabama","AL","South",9.236,269,253,17,  "Alaska","AK","West",17.510,274,252,11,
+  "Arizona","AZ","West",7.613,280,259,14,  "Arkansas","AR","South",9.846,274,259,17,
+  "California","CA","West",11.495,276,259,13,  "Colorado","CO","West",9.575,285,267,10,
+  "Connecticut","CT","NE",18.958,286,270,10,  "Delaware","DE","NE",14.713,277,260,12,
+  "Florida","FL","South",8.920,279,263,13,  "Georgia","GA","South",9.769,279,262,14,
+  "Hawaii","HI","West",13.748,275,258,9,  "Idaho","ID","West",7.157,286,266,12,
+  "Illinois","IL","MW",14.180,283,265,12,  "Indiana","IN","MW",9.856,286,266,13,
+  "Iowa","IA","MW",11.150,282,262,11,  "Kansas","KS","MW",9.960,282,263,12,
+  "Kentucky","KY","South",9.863,278,263,17,  "Louisiana","LA","South",11.038,272,257,19,
+  "Maine","ME","NE",13.278,282,265,11,  "Maryland","MD","South",14.206,280,264,9,
+  "Massachusetts","MA","MW",15.593,294,273,10,  "Michigan","MI","MW",11.668,280,263,14,
+  "Minnesota","MN","MW",12.382,291,264,10,  "Mississippi","MS","South",8.702,274,256,20,
+  "Missouri","MO","MW",10.313,281,263,13,  "Montana","MT","West",11.348,284,265,12,  
+  "Nebraska","NE","MW",12.299,285,264,11,  "Nevada","NV","West",8.960,274,258,13,
+  "New Hampshire","NH","NE",15.340,287,268,7,  "New Jersey","NJ","NE",18.402,292,270,9,
+  "New Mexico","NM","West",9.693,269,252,20,  "New York","NY","NE",22.366,280,262,14,
+  "North Carolina","NC","South",8.792,284,263,14,  "North Dakota","ND","MW",13.373,286,263,10,
+  "Ohio","OH","MW",12.102,286,267,14,  "Oklahoma","OK","MW",8.097,276,258,15,
+  "Oregon","OR","West",10.842,280,264,12,  "Pennsylvania","PA","NE",15.418,285,264,12,
+  "Rhode Island","RI","NE",15.532,276,262,13,  "South Carolina","SC","South",10.249,276,259,15,
+  "South Dakota","SD","MW",9.176,287,263,13,  "Tennessee","TN","South",8.810,280,262,15,
+  "Texas","TX","South",9.016,280,256,15,  "Utah","UT","West",6.953,285,267,9,
+  "Vermont","VT","NE",17.873,287,268,11,  "Virginia","VA","South",11.432,287,262,11,
+  "Washington","WA","West",11.534,286,266,10,  "West Virginia","WV","MW",11.291,272,256,18,
+  "Wisconsin","WI","MW",11.456,289,267,11,  "Wyoming","WY","West",16.442,286,265,11)
+```
+
+## Saving plots
+
+We can send a plot to a file in our working directory using a **ggsave** command, with commands such as...
+
+```{r save1, eval=FALSE, exercise=FALSE}
+ggsave(file="G:/plots/Figure 2.pdf", width=10, height=4.5)
+```
+
+...which saves to the G:/plots folder. Or with commands such as...
+
+```{r save2, eval=FALSE, exercise=FALSE}
+ggsave(file="Figure 2.pdf", width=10, height=4.5)
+```
+
+...which saves to the working directory. 
+
+The ggsave command doesn't get added as a plus (+) line to the ggplot command but instead is below the ggplot set of commands.
+
+---
+
+To get the working directory, use the command 
+
+```{r getwd, eval=FALSE, exercise=FALSE}
+getwd()
+```
+
+---
+
+The command **openFile** in the package **PBSmodelling** can be used to automatically open a file, such as the code below, if there is an available D: drive:
+
+```{r ggsave, exercise=TRUE, exercise.lines=21, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col()
+
+ggsave("D:R plot gunIMP.pdf", width=8, height=6)
+getwd()
+
+library("PBSmodelling")
+openFile("D:R plot gunIMP.pdf")
+```
+
+## Factors for ordering elements
+
+ggplot puts the elements in a character vector into alphabetical order, but, in our case, it is better to order the levels of partisanship from the political left to the political right. To do this, let's make the PID character vector into a **factor**. 
+
+R permits multiple datasets to be loaded at once per session, so the \$ is a way to tell R which dataset to get a vector from. We could have multiple datasets in an R session that have a vector named PID, so we need to tell R which PID vector we want. In code such as GUNIMP\$PID, the dollar sign (\$) separates the dataset from the vector in the dataset, so that, GUNIMP\$PID refers to the vector PID in the dataset GUNIMP. 
+
+For this plot, let's go back to columns. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_3A, exercise=TRUE, exercise.lines=19}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) 
+
+```
+
+---
+
+```{r review-dollar, echo=FALSE, exercise=FALSE}
+question("How would R interpret A$B?",
+  answer("The vector A in dataset B"),
+  answer("The vector B in dataset A", correct=TRUE),
+  allow_retry=TRUE
+)
+```
+
+```{r review-factor, echo=FALSE, exercise=FALSE}
+question("Which one of the following can be used to reorder the elements of a character vector?",
+  answer("facet"),
+  answer("factor", correct=TRUE),
+  answer("str_wrap"),
+  answer("tribble"),
+  allow_retry=TRUE
+)
+```
+
+## Axes
+
+ggplot2 has certain defaults about how far to extend axes. You might have noticed that the y-axis extended farther after the error bars were added, compared to when only the columns were plotted. Often for plotting percentages, it makes sense to plot the full range of possible percentages, such as from 0 to 100 (for plotting percentages) or from 0 to 1 (for plotting decimal percentages). Let's tell ggplot to do that. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_4A, exercise=TRUE, exercise.lines=20}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1)) 
+
+```
+
+---
+
+The expand option can remove or add buffer space around the plot. Let's get rid of the buffer space on the y-axis by setting **expand** to **expand=c(0,0)**. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_4B, exercise=TRUE, exercise.lines=20}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0))
+
+```
+
+---
+
+Let's tell ggplot2 where to place the axis labels, using a sequence function **seq** that tells ggplot to start at the first number, keep adding the third number, and stop when you reach the second number. In this case, **seq(0,1,0.2)** will return 0 to start, return new numbers every additional 0.2, and then stop at 1. The second number might or might not be the final number. For example, **seq(0,0.3,0.2)** would return only 0 and 0.2. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_4C, exercise=TRUE, exercise.lines=20}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2))
+
+```
+
+---
+
+The three parts of the sequence function can be thought of as "from", "to", and "by", and R will assume as a default that three numbers in a sequence function are intended to indicate the "from", "to", and "by" arguments. But the arguments can be made explicit and in a different order, such as below, with **seq(from=0, by=0.2, to=1)**. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_4D, exercise=TRUE, exercise.lines=20}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(from=0, by=0.2, to=1))
+
+```
+
+---
+
+If an axis has breaks but no labels indicated, ggplot uses the corresponding numbers as labels. But other values -- including non-numeric values -- can be assigned as labels. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_4E, exercise=TRUE, exercise.lines=21}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), 
+                     breaks=seq(from=0, by=0.5, to=1), labels=c("Zero percent", "Half", "100%"))
+
+```
+
+---
+
+A secondary axis can be added to the other side of the plot. Let's use a simple duplicate y-axis for now, but it is possible to have a different secondary axis so that, for instance, one side has labels in counts and another side has labels in percentages. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_4F, exercise=TRUE, exercise.lines=20}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis())
+
+```
+
+---
+
+### Exercises
+
+```{r review-seq1, echo=FALSE, exercise=FALSE}
+question("Which one of the following would be returned by: seq(0,6,3)?",
+  answer("0 6 3"),
+  answer("0 3 6", correct=TRUE),
+  answer("0 6 0 6 0 6"),
+  answer("9"),
+  allow_retry=TRUE
+)
+```
+
+```{r review-seq2, echo=FALSE, exercise=FALSE}
+question("Which one of the following would be returned by: seq(0,6,4)?",
+  answer("0 6 4"),
+  answer("0 4", correct=TRUE),
+  answer("0 6 0 6 0 6 0 6"),
+  answer("0 6 12 18"),
+  allow_retry=TRUE
+)
+```
+
+```{r review-labels, echo=FALSE, exercise=FALSE}
+question("Suppose that a ggplot axis command for a continuous vector indicates to put breaks at seq(0,100,50) but does not indicate what the the labels should be. In this case, ggplot will ___.",
+  answer("not plot any labels"),
+  answer("plot labels at 0 and 100"),
+  answer("plot labels at 0, 50, and 100", correct=TRUE),
+  allow_retry=TRUE
+)
+```
+
+## Titles and other labels
+
+Let's add a title. Notice that we need to put a slash before internal quotation marks, so that ggplot doesn't get fooled into thinking that the title stops at the first internal quotation mark. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_5A, exercise=TRUE, exercise.lines=21}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
+  labs(title="Predicted probability of responding \"extremely important\" about how important the respondent considers the issue of the federal gun laws")
+
+```
+
+---
+
+That title is long, so let's break the title into two lines, using \\n to tell ggplot to start a new line. Let's also add a caption. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_5B, exercise=TRUE, exercise.lines=21}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
+  labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption="Note: Error bars are 83.4% confidence intervals. Estimates are from a logit regression, with weights applied and with categorical controls for gender, race, age group, education, marital status, household income, and gun ownership set at their means. Data source: American National Election Studies 2020 Time Series Study (2021).")
+
+```
+
+---
+
+That caption is really long. Instead of breaking it into several lines using \n, let's use the **str_wrap** function. I'll also move the caption outside of the main plot code, and then call the caption in the code. The 100 width inside the str_wrap function is the width of the lines in number of characters. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_5C, exercise=TRUE, exercise.lines=27}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates are from a logit 
+                     regression, with weights applied and with categorical controls for gender, 
+                     race, age group, education, marital status, household income, and gun ownership 
+                     set at their means. Data source: American National Election Studies 2020 Time 
+                     Series Study (2021).", width=120)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
+  labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION)
+
+```
+
+---
+
+### Exercises
+
+```{r review-internal-quotes, echo=FALSE, exercise=FALSE}
+question("How can we get ggplot2 to ignore internal quotation marks?",
+  answer("Put a \\ in front of the internal quotation marks.", correct=TRUE),
+  answer("Put a + in front of the internal quotation marks."),
+  answer("Put a {} around the internal quotation marks."),
+  answer("Put an ! in front of the internal quotation marks."),
+  allow_retry=TRUE
+)
+```
+
+```{r review-factor1, echo=FALSE, exercise=FALSE}
+question("Which one of the following can be used to keep the width of a text string within a certain number of characters?",
+  answer("facet"),
+  answer("factor"),
+  answer("str_wrap", correct=TRUE),
+  answer("tribble"),
+  allow_retry=TRUE
+)
+```
+
+## Text in the data region
+
+Let's add the point estimates above the columns. The **hjust** values of 0, 0.5, and 1 are respectively for left, center, and right justification. The **vjust** values of 0, 0.5, and 1 are respectively for bottom, middle, and top justification. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_6A, exercise=TRUE, exercise.lines=28}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates are from a logit 
+                     regression, with weights applied and with categorical controls for gender, 
+                     race, age group, education, marital status, household income, and gun ownership 
+                     set at their means. Data source: American National Election Studies 2020 Time 
+                     Series Study (2021).", width=120)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_text(aes(y=CIHI+0.05, label=PE, size=5, hjust=0.5, vjust=0), show.legend=FALSE) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
+  labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION)
+
+```
+
+---
+
+Let's get the point estimates to be percentages rounded to the nearest whole number (accuracy=1). Click the Run Code button below:
+
+```{r GUNIMP_ggplot_6B, exercise=TRUE, exercise.lines=28}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates are from a logit 
+                     regression, with weights applied and with categorical controls for gender, 
+                     race, age group, education, marital status, household income, and gun ownership 
+                     set at their means. Data source: American National Election Studies 2020 Time 
+                     Series Study (2021).", width=120)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_text(aes(y=CIHI+0.05, label=scales::percent(PE, accuracy=1)), size=5, hjust=0.5, vjust=0) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
+  labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION)
+
+```
+
+Let's see what happens with **accuracy=0.01** and with **accuracy=5**.
+
+---
+
+### Exercises
+
+```{r review-rj, echo=FALSE, exercise=FALSE}
+question("Which one of the following is the number used for right justification of horizontal text?",
+  answer("0"),
+  answer("0.5"),
+  answer("1", correct=TRUE),
+  answer("-1"),
+  allow_retry=TRUE
+)
+```
+
+
+```{r review-bj, echo=FALSE, exercise=FALSE}
+question("Which one of the following is the number used for bottom justification of horizontal text?",
+  answer("0", correct=TRUE),
+  answer("0.5"),
+  answer("1"),
+  answer("-1"),
+  allow_retry=TRUE
+)
+```
+
+
+## Themes
+
+Let's edit some non-data **theme** elements of the plot. First, let's remove elements that aren't needed, such as the y-axis title (PE), the x-axis title (PID), the tick marks, the grid lines, and the y-axis labels. For removing theme elements, indicate the thing to change and then list it as **element_blank()**. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_7A, exercise=TRUE, exercise.lines=38}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates are from a logit 
+                     regression, with weights applied and with categorical controls for gender, 
+                     race, age group, education, marital status, household income, and gun ownership 
+                     set at their means. Data source: American National Election Studies 2020 Time 
+                     Series Study (2021).", width=120)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_text(aes(y=CIHI+0.05, label=scales::percent(PE, accuracy=1)), size=5, hjust=0.5, vjust=0) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
+  labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION) +
+    theme(
+    axis.text.y        = element_blank(),
+    axis.ticks.x       = element_blank(),
+    axis.ticks.y       = element_blank(),
+    axis.title.x       = element_blank(),
+    axis.title.y       = element_blank(),
+    panel.grid.major.x = element_blank(), 
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(), 
+    panel.grid.minor.y = element_blank())
+
+```
+
+---
+
+Now, let add in theme elements that involve changes that we want to see, such as larger text, darker text, and a border. Click the Run Code button below:
+
+```{r GUNIMP_ggplot_7B, exercise=TRUE, exercise.lines=45}
+
+library(tidyverse)
+
+GUNIMP <- tribble(
+  ~PID                     , ~PE      , ~CILO    , ~CIHI    ,
+  "Strong\nDemocrat"       , 0.4445886, 0.4089648, 0.4802125,
+  "Not strong\nDemocrat"   , 0.2726622, 0.2290617, 0.3162628,
+  "Independent\nDemocrat"  , 0.2509012, 0.218784 , 0.2830185,
+  "Independent"            , 0.2135729, 0.1755062, 0.2516396,
+  "Independent\nRepublican", 0.2633814, 0.218896 , 0.3078668,
+  "Not strong\nRepublican" , 0.2074255, 0.1671848, 0.2476663,
+  "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
+
+GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
+
+CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates are from a logit 
+                     regression, with weights applied and with categorical controls for gender, 
+                     race, age group, education, marital status, household income, and gun ownership 
+                     set at their means. Data source: American National Election Studies 2020 Time 
+                     Series Study (2021).", width=120)
+
+ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
+  geom_col(size=1.1, width=0.8, color="black", 
+           fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_text(aes(y=CIHI+0.05, label=scales::percent(PE, accuracy=1)), size=5, hjust=0.5, vjust=0) +
+  scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
+  labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION) +
+    theme(
+    axis.text.x        = element_text(size=13, color="black", hjust=0.5, margin=margin(t=8,b=8)),
+    axis.text.y        = element_blank(),
+    axis.ticks.x       = element_blank(),
+    axis.ticks.y       = element_blank(),
+    axis.title.x       = element_blank(),
+    axis.title.y       = element_blank(),
+    panel.background   = element_rect(size=0.5, color="black", fill="gray90", linetype="solid"),
+    panel.border       = element_rect(size=1.8, color="black", fill=NA      , linetype="solid"),
+    panel.grid.major.x = element_blank(), 
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(), 
+    panel.grid.minor.y = element_blank(),
+    plot.background    = element_rect(fill="white"),
+    plot.caption       = element_text(size=10 , hjust=0  , margin=margin(t=10)),
+    plot.margin        = unit(c(t=10,r=10,b=10,l=10),"pt"),
+    plot.title         = element_text(size=15 , hjust=0.5, margin=margin(t=0,b=10), face="bold"))
+
+```
+
+---
+
+To see the list of theme elements that can be modified, click Run Code below to open a help webpage:
+
+```{r help-theme, exercise=TRUE}
+library(tidyverse)
+?theme
+```
+
+The ? works generally to get a help page for R functions and packages. click Run Code below:
+
+```{r help-round,  exercise=TRUE}
+?round
+```
+
+```{r help-haven,  exercise=TRUE}
+?haven
+```
+
+## Facets
+
+Facets can be used to plot multiple panels for the same plot. The data below are respondent ratings about the National Rifle Association, disaggregated by race/ethnicity. A few things to note about the code:
+
+1. The **unique** function can be used to get only the unique elements of a vector. The **levels** argument is the order of the elements, so we only need one of each element, so in the **NRA\$RACE <- factor(NRA\$RACE, levels=rev(unique(NRA\$RACE)))** command, the **unique** part returns only four elements: "White", "Black", "Hispanic", and "Other". The **rev* is to reverse the order of the elements. The default ggplot order is left-to-right and bottom-to-top, so for vertical axes or vertical facets the order of the elements has to be bottom-to-top or has to be top-to-bottom and then reversed.
+
+2. The **filter** part of the **geom_point** command is used to limit that command to only one of the facets, so that, in this code, the points have a different color in each facet. Remember that the "color" argument is for the outline of a geom when the geom has a fill. But, in this case, the geom does not have a fill, so the color indicates the color of the geom.
+
+3. The **ggplot(NRA, aes(PE, RACE))** setup line does not explicitly indicate which of these is the dataset, which of these is the x variable, and which of these is the y variable. However, ggplot assumes that the first argument is the dataset and that the first "aes" argument is the x variable.
+
+Click the Run Code button below:
+
+```{r NRA1, exercise=TRUE, exercise.lines=30}
+
+library(tidyverse)
+
+NRA <- tribble(
+  ~IDEO         , ~RACE     , ~PE  , ~CILO, ~CIHI,
+  "Liberal"     , "White"   , 19.33, 18.14, 20.51,
+  "Liberal"     , "Black"   , 28.26, 23.94, 32.59,
+  "Liberal"     , "Hispanic", 26.70, 22.15, 31.25,
+  "Liberal"     , "Other"   , 22.51, 18.85, 26.17,
+  "Moderate"    , "White"   , 48.36, 46.49, 50.23,
+  "Moderate"    , "Black"   , 40.25, 35.30, 45.20,
+  "Moderate"    , "Hispanic", 43.69, 39.00, 48.38,
+  "Moderate"    , "Other"   , 47.59, 43.30, 51.89,
+  "Conservative", "White"   , 73.43, 72.38, 74.47,
+  "Conservative", "Black"   , 47.59, 39.98, 55.20,
+  "Conservative", "Hispanic", 69.12, 64.73, 73.51,
+  "Conservative", "Other"   , 64.76, 60.54, 68.98)
+
+NRA$RACE <- factor(NRA$RACE, levels=rev(unique(NRA$RACE)))
+NRA$IDEO <- factor(NRA$IDEO, levels=unique(NRA$IDEO))
+
+ggplot(NRA, aes(PE, RACE)) +
+  facet_wrap(~IDEO, nrow=1, dir="h") +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_point(data=filter(NRA, IDEO=="Liberal")     , size=3, color="blue3" ) +
+  geom_point(data=filter(NRA, IDEO=="Moderate")    , size=3, color="gray70") +
+  geom_point(data=filter(NRA, IDEO=="Conservative"), size=3, color="red3"  ) +
+  scale_x_continuous(limits=c(0,100), breaks=seq(0,100,25)) +
+  labs(title="Mean rating of the\nNational Rifle Association, by race", 
+       caption="Data source: ANES 2020 Time Series Study") 
+```
+
+---
+
+Notice that a flaw in the above plot is that it's difficult to compare liberals of one race to conservatives of the same race. But those comparisons can be easier to make if we change the facet_wrap to be horizontal, by changing the directions to be 1 column instead of 1 row. Click the Run Code button below:
+
+```{r NRA2, exercise=TRUE, exercise.lines=30}
+
+library(tidyverse)
+
+NRA <- tribble(
+  ~IDEO         , ~RACE     , ~PE  , ~CILO, ~CIHI,
+  "Liberal"     , "White"   , 19.33, 18.14, 20.51,
+  "Liberal"     , "Black"   , 28.26, 23.94, 32.59,
+  "Liberal"     , "Hispanic", 26.70, 22.15, 31.25,
+  "Liberal"     , "Other"   , 22.51, 18.85, 26.17,
+  "Moderate"    , "White"   , 48.36, 46.49, 50.23,
+  "Moderate"    , "Black"   , 40.25, 35.30, 45.20,
+  "Moderate"    , "Hispanic", 43.69, 39.00, 48.38,
+  "Moderate"    , "Other"   , 47.59, 43.30, 51.89,
+  "Conservative", "White"   , 73.43, 72.38, 74.47,
+  "Conservative", "Black"   , 47.59, 39.98, 55.20,
+  "Conservative", "Hispanic", 69.12, 64.73, 73.51,
+  "Conservative", "Other"   , 64.76, 60.54, 68.98)
+
+NRA$RACE <- factor(NRA$RACE, levels=rev(unique(NRA$RACE)))
+NRA$IDEO <- factor(NRA$IDEO, levels=unique(NRA$IDEO))
+
+ggplot(NRA, aes(PE, RACE)) +
+  facet_wrap(~IDEO, ncol=1, dir="h") +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_point(data=filter(NRA, IDEO=="Liberal")     , size=3, color="blue3" ) +
+  geom_point(data=filter(NRA, IDEO=="Moderate")    , size=3, color="gray70") +
+  geom_point(data=filter(NRA, IDEO=="Conservative"), size=3, color="red3"  ) +
+  scale_x_continuous(limits=c(0,100), breaks=seq(0,100,25)) +
+  labs(title="Mean rating of the\nNational Rifle Association, by race", 
+       caption="Data source: ANES 2020 Time Series Study") 
+```
+
+---
+
+And notice how relatively easy it is to swap an axis and a facet. The only changes in the code below are [1] to change the Y variable to IDEO, change the facet variable to RACE, and [3] change the number of columns to 2. 
+
+```{r NRA3, exercise=TRUE, exercise.lines=30}
+
+library(tidyverse)
+
+NRA <- tribble(
+  ~IDEO         , ~RACE     , ~PE  , ~CILO, ~CIHI,
+  "Liberal"     , "White"   , 19.33, 18.14, 20.51,
+  "Liberal"     , "Black"   , 28.26, 23.94, 32.59,
+  "Liberal"     , "Hispanic", 26.70, 22.15, 31.25,
+  "Liberal"     , "Other"   , 22.51, 18.85, 26.17,
+  "Moderate"    , "White"   , 48.36, 46.49, 50.23,
+  "Moderate"    , "Black"   , 40.25, 35.30, 45.20,
+  "Moderate"    , "Hispanic", 43.69, 39.00, 48.38,
+  "Moderate"    , "Other"   , 47.59, 43.30, 51.89,
+  "Conservative", "White"   , 73.43, 72.38, 74.47,
+  "Conservative", "Black"   , 47.59, 39.98, 55.20,
+  "Conservative", "Hispanic", 69.12, 64.73, 73.51,
+  "Conservative", "Other"   , 64.76, 60.54, 68.98)
+
+NRA$RACE <- factor(NRA$RACE, levels=rev(unique(NRA$RACE)))
+NRA$IDEO <- factor(NRA$IDEO, levels=unique(NRA$IDEO))
+
+ggplot(NRA, aes(PE, IDEO)) +
+  facet_wrap(~RACE, ncol=2, dir="h") +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_point(data=filter(NRA, IDEO=="Liberal")     , size=3, color="blue3" ) +
+  geom_point(data=filter(NRA, IDEO=="Moderate")    , size=3, color="gray70") +
+  geom_point(data=filter(NRA, IDEO=="Conservative"), size=3, color="red3"  ) +
+  scale_x_continuous(limits=c(0,100), breaks=seq(0,100,25)) +
+  labs(title="Mean rating of the\nNational Rifle Association, by race", 
+       caption="Data source: ANES 2020 Time Series Study") 
+```
+
+---
+
+Below is an example of a line of code (starting with "geom_rect") that can be used to add an element to a particular facet:
+
+```{r NRA4, exercise=TRUE, exercise.lines=32}
+
+library(tidyverse)
+
+NRA <- tribble(
+  ~IDEO         , ~RACE     , ~PE  , ~CILO, ~CIHI,
+  "Liberal"     , "White"   , 19.33, 18.14, 20.51,
+  "Liberal"     , "Black"   , 28.26, 23.94, 32.59,
+  "Liberal"     , "Hispanic", 26.70, 22.15, 31.25,
+  "Liberal"     , "Other"   , 22.51, 18.85, 26.17,
+  "Moderate"    , "White"   , 48.36, 46.49, 50.23,
+  "Moderate"    , "Black"   , 40.25, 35.30, 45.20,
+  "Moderate"    , "Hispanic", 43.69, 39.00, 48.38,
+  "Moderate"    , "Other"   , 47.59, 43.30, 51.89,
+  "Conservative", "White"   , 73.43, 72.38, 74.47,
+  "Conservative", "Black"   , 47.59, 39.98, 55.20,
+  "Conservative", "Hispanic", 69.12, 64.73, 73.51,
+  "Conservative", "Other"   , 64.76, 60.54, 68.98)
+
+NRA$RACE <- factor(NRA$RACE, levels=rev(unique(NRA$RACE)))
+NRA$IDEO <- factor(NRA$IDEO, levels=unique(NRA$IDEO))
+
+ggplot(NRA, aes(PE, IDEO)) +
+  geom_rect(data=filter(NRA, RACE=="Black"), aes(xmin=min(NRA$PE[NRA$RACE=="Black"]), xmax=max(NRA$PE[NRA$RACE=="Black"]), ymin=-Inf, ymax=Inf), fill="slategray1", color="black", inherit.aes=FALSE) +
+  facet_wrap(~RACE, ncol=2, dir="h") +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_point(data=filter(NRA, IDEO=="Liberal")     , size=3, color="blue3" ) +
+  geom_point(data=filter(NRA, IDEO=="Moderate")    , size=3, color="gray70") +
+  geom_point(data=filter(NRA, IDEO=="Conservative"), size=3, color="red3"  ) +
+  scale_x_continuous(limits=c(0,100), breaks=seq(0,100,25)) +
+  labs(title="Mean rating of the\nNational Rifle Association, by race", 
+       caption="Data source: ANES 2020 Time Series Study") 
+```
+
+---
+
+### Exercises
+
+```{r review-facet, echo=FALSE, exercise=FALSE}
+question("Which one of the following can be used to produce multiple panels for a single plot?",
+  answer("facet", correct=TRUE),
+  answer("factor"),
+  answer("str_wrap"),
+  answer("tribble"),
+  allow_retry=TRUE
+)
+```
+
+## Linear regression lines
+
+Let's draw a linear regression line through a set of 50 points, each representing a state in the United States, on a x-axis that is an estimate of the percentage of state residents that identify as LGBT and a y-axis that is the percentage of the vote that Donald Trump received in the state in the 2016 U.S. presidential election. Click the Run Code button below:
+
+```{r TRUMP1, exercise=TRUE, exercise.lines=24}
+
+library(tidyverse)
+
+TRUMP <- tribble(
+  ~STATE, ~STATEABBV, ~PCTTRUMP, ~LGBT,
+  "Alabama","AL",62.08,3, "Alaska","AK",51.28,3, "Arizona","AZ",48.67,4, "Arkansas","AK",60.57,3, 
+  "California","CA",31.62,4.9, "Colorado","CO",43.25,4.3, "Connecticut","CT",40.93,3.5, 
+  "Delaware","DE",41.71,4.7, "Florida","FL",49.02,4.2, "Georgia","GA",50.77,4, "Hawaii","HI",30.04,3.8,
+  "Idaho","ID",59.26,2.8, "Illinois","IL",38.76,3.9, "Indiana","IN",56.94,4.1, "Iowa","IA",51.15,3.2,
+  "Kansas","KS",56.65,3.1, "Kentucky","KY",62.52,3.3, "Louisiana","LA",58.09,3.7, "Maine","ME",44.87,4.5, 
+  "Maryland","MD",33.91,3.9, "Massachusetts","MA",32.81,4.9, "Michigan","MI",47.5,3.8, 
+  "Minnesota","MN",44.92,4, "Mississippi","MS",57.94,3.2, "Missouri","MO",56.77,3.4, 
+  "Montana","MT",56.17,3, "Nebraska","NE",58.75,3.6, "Nevada","NV",45.5,4.8, 
+  "New Hampshire","NH",46.46,4.6, "New Jersey","NJ",41.35,3.6, "New Mexico","NM",40.04,4.2, 
+  "New York","NY",36.52,4.5, "North Carolina","NC",49.83,3.5, "North Dakota","ND",62.96,2.7, 
+  "Ohio","OH",51.69,3.8, "Oklahoma","OK",65.32,3.5, "Oregon","OR",39.09,4.9, 
+  "Pennsylvania","PA",48.18,3.6, "Rhode Island","RI",38.9,4, "South Carolina","SC",54.94,3, 
+  "South Dakota","SD",61.53,2, "Tennessee","TN",60.72,3.1, "Texas","TX",52.23,3.6, "Utah","UT",45.54,3.3, 
+  "Vermont","VT",30.27,5.3, "Virginia","VA",44.41,3.4, "Washington","WA",36.83,4.6, 
+  "West Virginia","WV",68.5,3.4, "Wisconsin","WI",47.22,3.4)
+
+ggplot(data=TRUMP, aes(x=LGBT, y=PCTTRUMP)) +
+  geom_point(size=3) +
+  geom_smooth(method="lm")
+
+```
+
+---
+
+Let's shut off the confidence interval, replace the points with state abbreviations, and put the state abbreviations on top of the linear regression line. Click the Run Code button below:
+
+```{r TRUMP2, exercise=TRUE, exercise.lines=25}
+
+library(tidyverse)
+
+TRUMP <- tribble(
+  ~STATE, ~STATEABBV, ~PCTTRUMP, ~LGBT,
+  "Alabama","AL",62.08,3, "Alaska","AK",51.28,3, "Arizona","AZ",48.67,4, "Arkansas","AK",60.57,3, 
+  "California","CA",31.62,4.9, "Colorado","CO",43.25,4.3, "Connecticut","CT",40.93,3.5, 
+  "Delaware","DE",41.71,4.7, "Florida","FL",49.02,4.2, "Georgia","GA",50.77,4, "Hawaii","HI",30.04,3.8,
+  "Idaho","ID",59.26,2.8, "Illinois","IL",38.76,3.9, "Indiana","IN",56.94,4.1, "Iowa","IA",51.15,3.2,
+  "Kansas","KS",56.65,3.1, "Kentucky","KY",62.52,3.3, "Louisiana","LA",58.09,3.7, "Maine","ME",44.87,4.5, 
+  "Maryland","MD",33.91,3.9, "Massachusetts","MA",32.81,4.9, "Michigan","MI",47.5,3.8, 
+  "Minnesota","MN",44.92,4, "Mississippi","MS",57.94,3.2, "Missouri","MO",56.77,3.4, 
+  "Montana","MT",56.17,3, "Nebraska","NE",58.75,3.6, "Nevada","NV",45.5,4.8, 
+  "New Hampshire","NH",46.46,4.6, "New Jersey","NJ",41.35,3.6, "New Mexico","NM",40.04,4.2, 
+  "New York","NY",36.52,4.5, "North Carolina","NC",49.83,3.5, "North Dakota","ND",62.96,2.7, 
+  "Ohio","OH",51.69,3.8, "Oklahoma","OK",65.32,3.5, "Oregon","OR",39.09,4.9, 
+  "Pennsylvania","PA",48.18,3.6, "Rhode Island","RI",38.9,4, "South Carolina","SC",54.94,3, 
+  "South Dakota","SD",61.53,2, "Tennessee","TN",60.72,3.1, "Texas","TX",52.23,3.6, "Utah","UT",45.54,3.3, 
+  "Vermont","VT",30.27,5.3, "Virginia","VA",44.41,3.4, "Washington","WA",36.83,4.6, 
+  "West Virginia","WV",68.5,3.4, "Wisconsin","WI",47.22,3.4)
+
+ggplot(data=TRUMP, aes(x=LGBT, y=PCTTRUMP)) +
+  geom_smooth(method="lm", se=FALSE) +
+  geom_text(size=4, label=TRUMP$STATEABBV)
+
+```
+
+---
+
+### Exercises
+
+```{r review-lm, echo=FALSE, exercise=FALSE}
+question("Which one of the following will produce a linear regression line?",
+  answer("geom_line(method=\"reg\")"),
+  answer("geom_ols()"),
+  answer("geom_reg()"),
+  answer("geom_smooth(method=\"lm\")", correct=TRUE),
+  allow_retry=TRUE
+)
+```
+
+## Jitters
+
+Let's plot on the y-axis the percentage LGBT in a state and on the x-axis whether at least half of votes in the state went to Donald Trump in the 2016 U.S. presidential election. Click the Run Code button below:
+
+```{r JITTER1, exercise=TRUE, exercise.lines=27}
+
+library(tidyverse)
+
+TRUMP <- tribble(
+  ~STATE, ~STATEABBV, ~PCTTRUMP, ~LGBT,
+  "Alabama","AL",62.08,3, "Alaska","AK",51.28,3, "Arizona","AZ",48.67,4, "Arkansas","AK",60.57,3, 
+  "California","CA",31.62,4.9, "Colorado","CO",43.25,4.3, "Connecticut","CT",40.93,3.5, 
+  "Delaware","DE",41.71,4.7, "Florida","FL",49.02,4.2, "Georgia","GA",50.77,4, "Hawaii","HI",30.04,3.8,
+  "Idaho","ID",59.26,2.8, "Illinois","IL",38.76,3.9, "Indiana","IN",56.94,4.1, "Iowa","IA",51.15,3.2,
+  "Kansas","KS",56.65,3.1, "Kentucky","KY",62.52,3.3, "Louisiana","LA",58.09,3.7, "Maine","ME",44.87,4.5, 
+  "Maryland","MD",33.91,3.9, "Massachusetts","MA",32.81,4.9, "Michigan","MI",47.5,3.8, 
+  "Minnesota","MN",44.92,4, "Mississippi","MS",57.94,3.2, "Missouri","MO",56.77,3.4, 
+  "Montana","MT",56.17,3, "Nebraska","NE",58.75,3.6, "Nevada","NV",45.5,4.8, 
+  "New Hampshire","NH",46.46,4.6, "New Jersey","NJ",41.35,3.6, "New Mexico","NM",40.04,4.2, 
+  "New York","NY",36.52,4.5, "North Carolina","NC",49.83,3.5, "North Dakota","ND",62.96,2.7, 
+  "Ohio","OH",51.69,3.8, "Oklahoma","OK",65.32,3.5, "Oregon","OR",39.09,4.9, 
+  "Pennsylvania","PA",48.18,3.6, "Rhode Island","RI",38.9,4, "South Carolina","SC",54.94,3, 
+  "South Dakota","SD",61.53,2, "Tennessee","TN",60.72,3.1, "Texas","TX",52.23,3.6, "Utah","UT",45.54,3.3, 
+  "Vermont","VT",30.27,5.3, "Virginia","VA",44.41,3.4, "Washington","WA",36.83,4.6, 
+  "West Virginia","WV",68.5,3.4, "Wisconsin","WI",47.22,3.4)
+
+TRUMP$TRUMP50 <- case_when(
+            TRUMP$PCTTRUMP>=50 ~ "Trump>=50",
+            TRUMP$PCTTRUMP< 50 ~ "Trump< 50")
+
+ggplot(data=TRUMP, aes(x=TRUMP50, y=LGBT)) +
+  geom_point()
+
+```
+
+---
+
+The above plot is flawed because some of the points are on top of each other and thus the plot might not accurately indicate the relative number of points in each column or the location of the points. But we can adjust this with a jitter. Click the Run Code button below:
+
+```{r JITTER2, exercise=TRUE, exercise.lines=27}
+
+library(tidyverse)
+
+TRUMP <- tribble(
+  ~STATE, ~STATEABBV, ~PCTTRUMP, ~LGBT,
+  "Alabama","AL",62.08,3, "Alaska","AK",51.28,3, "Arizona","AZ",48.67,4, "Arkansas","AK",60.57,3, 
+  "California","CA",31.62,4.9, "Colorado","CO",43.25,4.3, "Connecticut","CT",40.93,3.5, 
+  "Delaware","DE",41.71,4.7, "Florida","FL",49.02,4.2, "Georgia","GA",50.77,4, "Hawaii","HI",30.04,3.8,
+  "Idaho","ID",59.26,2.8, "Illinois","IL",38.76,3.9, "Indiana","IN",56.94,4.1, "Iowa","IA",51.15,3.2,
+  "Kansas","KS",56.65,3.1, "Kentucky","KY",62.52,3.3, "Louisiana","LA",58.09,3.7, "Maine","ME",44.87,4.5, 
+  "Maryland","MD",33.91,3.9, "Massachusetts","MA",32.81,4.9, "Michigan","MI",47.5,3.8, 
+  "Minnesota","MN",44.92,4, "Mississippi","MS",57.94,3.2, "Missouri","MO",56.77,3.4, 
+  "Montana","MT",56.17,3, "Nebraska","NE",58.75,3.6, "Nevada","NV",45.5,4.8, 
+  "New Hampshire","NH",46.46,4.6, "New Jersey","NJ",41.35,3.6, "New Mexico","NM",40.04,4.2, 
+  "New York","NY",36.52,4.5, "North Carolina","NC",49.83,3.5, "North Dakota","ND",62.96,2.7, 
+  "Ohio","OH",51.69,3.8, "Oklahoma","OK",65.32,3.5, "Oregon","OR",39.09,4.9, 
+  "Pennsylvania","PA",48.18,3.6, "Rhode Island","RI",38.9,4, "South Carolina","SC",54.94,3, 
+  "South Dakota","SD",61.53,2, "Tennessee","TN",60.72,3.1, "Texas","TX",52.23,3.6, "Utah","UT",45.54,3.3, 
+  "Vermont","VT",30.27,5.3, "Virginia","VA",44.41,3.4, "Washington","WA",36.83,4.6, 
+  "West Virginia","WV",68.5,3.4, "Wisconsin","WI",47.22,3.4)
+
+TRUMP$TRUMP50 <- case_when(
+            TRUMP$PCTTRUMP>=50 ~ "Trump>=50",
+            TRUMP$PCTTRUMP< 50 ~ "Trump< 50")
+
+ggplot(data=TRUMP, aes(x=TRUMP50, y=LGBT)) +
+  geom_point(position=position_jitter(h=0, w=0.1, seed=1234))
+
+```
+
+The h and w indicate the height and width of the jitter, and the seed is used if we want the jitter to be the same each time we run the code. Not setting a seed means that the jitter will be randomized each time the code is run, like below, for which you can click Run Code multiple times:
+
+```{r JITTER3, exercise=TRUE, exercise.lines=27}
+
+library(tidyverse)
+
+TRUMP <- tribble(
+  ~STATE, ~STATEABBV, ~PCTTRUMP, ~LGBT,
+  "Alabama","AL",62.08,3, "Alaska","AK",51.28,3, "Arizona","AZ",48.67,4, "Arkansas","AK",60.57,3, 
+  "California","CA",31.62,4.9, "Colorado","CO",43.25,4.3, "Connecticut","CT",40.93,3.5, 
+  "Delaware","DE",41.71,4.7, "Florida","FL",49.02,4.2, "Georgia","GA",50.77,4, "Hawaii","HI",30.04,3.8,
+  "Idaho","ID",59.26,2.8, "Illinois","IL",38.76,3.9, "Indiana","IN",56.94,4.1, "Iowa","IA",51.15,3.2,
+  "Kansas","KS",56.65,3.1, "Kentucky","KY",62.52,3.3, "Louisiana","LA",58.09,3.7, "Maine","ME",44.87,4.5, 
+  "Maryland","MD",33.91,3.9, "Massachusetts","MA",32.81,4.9, "Michigan","MI",47.5,3.8, 
+  "Minnesota","MN",44.92,4, "Mississippi","MS",57.94,3.2, "Missouri","MO",56.77,3.4, 
+  "Montana","MT",56.17,3, "Nebraska","NE",58.75,3.6, "Nevada","NV",45.5,4.8, 
+  "New Hampshire","NH",46.46,4.6, "New Jersey","NJ",41.35,3.6, "New Mexico","NM",40.04,4.2, 
+  "New York","NY",36.52,4.5, "North Carolina","NC",49.83,3.5, "North Dakota","ND",62.96,2.7, 
+  "Ohio","OH",51.69,3.8, "Oklahoma","OK",65.32,3.5, "Oregon","OR",39.09,4.9, 
+  "Pennsylvania","PA",48.18,3.6, "Rhode Island","RI",38.9,4, "South Carolina","SC",54.94,3, 
+  "South Dakota","SD",61.53,2, "Tennessee","TN",60.72,3.1, "Texas","TX",52.23,3.6, "Utah","UT",45.54,3.3, 
+  "Vermont","VT",30.27,5.3, "Virginia","VA",44.41,3.4, "Washington","WA",36.83,4.6, 
+  "West Virginia","WV",68.5,3.4, "Wisconsin","WI",47.22,3.4)
+
+TRUMP$TRUMP50 <- case_when(
+            TRUMP$PCTTRUMP>=50 ~ "Trump>=50",
+            TRUMP$PCTTRUMP< 50 ~ "Trump< 50")
+
+ggplot(data=TRUMP, aes(x=TRUMP50, y=LGBT)) +
+  geom_point(position=position_jitter(h=0, w=0.1))
+
+```
+
+## Patchwork
+
+The **patchwork** package can be used to plot multiple different plots in the same plot. As indicated below, we can assign each plot to an object ("p.total <-") and then plot these objects. The "p.histogram / (p.total + p.26)" line tells patchwork to put the p.histogram plot on top and the p.total and p.26 plots on the bottom. Click the Run Code button below:
+
+```{r PATCHWORK, exercise=TRUE, exercise.lines=53}
+
+library(tidyverse)
+
+DATA <- tribble(
+  ~TEAM                  , ~WINPCT, ~PAY26    , ~PAYTOTAL ,
+  "Los Angeles Dodgers"  , 0.654  , 174.661542, 266.020809,
+  "New York Yankees"     , 0.568  , 141.518753, 205.669863,
+  "New York Mets"        , 0.475  , 154.565754, 201.189189,
+  "Philadelphia Phillies", 0.506  , 157.714046, 197.213223,
+  "Houston Astros"       , 0.586  , 147.127725, 194.472041,
+  "Boston Red Sox"       , 0.568  , 141.452731, 187.100784,
+  "Los Angeles Angels"   , 0.475  ,  30.467086, 180.349558,
+  "San Diego Padres"     , 0.488  , 125.977584, 179.764272,
+  "San Francisco Giants" , 0.660  , 134.386796, 171.890308,
+  "St. Louis Cardinals"  , 0.556  , 136.018560, 171.469994,
+  "Atlanta Braves"       , 0.547  , 115.664387, 153.060458,
+  "Toronto Blue Jays"    , 0.562  , 108.402749, 150.140253,
+  "Chicago Cubs"         , 0.438  ,  33.910889, 144.607670,
+  "Washington Nationals" , 0.401  ,  50.076145, 144.415187,
+  "Chicago White Sox"    , 0.574  , 125.829369, 140.926169,
+  "Cincinnati Reds"      , 0.512  ,  84.625436, 125.887446,
+  "Minnesota Twins"      , 0.451  ,  83.609495, 120.084606,
+  "Colorado Rockies"     , 0.460  ,  79.895422, 116.408966,
+  "Milwaukee Brewers"    , 0.586  ,  79.937621,  99.377415,
+  "Texas Rangers"        , 0.370  ,  24.843032,  95.788819,
+  "Kansas City Royals"   , 0.457  ,  52.514932,  91.595545,
+  "Arizona Diamondbacks" , 0.321  ,  52.829878,  91.232929,
+  "Oakland Athletics"    , 0.531  ,  51.210210,  90.400598,
+  "Detroit Tigers"       , 0.475  ,  61.408153,  86.348945,
+  "Seattle Mariners"     , 0.556  ,  57.025609,  83.837448,
+  "Tampa Bay Rays"       , 0.617  ,  44.288651,  70.836327,
+  "Miami Marlins"        , 0.414  ,  16.304223,  58.157900,
+  "Pittsburgh Pirates"   , 0.377  ,  16.572841,  54.356609,
+  "Cleveland Indians"    , 0.494  ,  35.682311,  50.670534,
+  "Baltimore Orioles"    , 0.321  ,  13.838690,  42.421870)
+
+p.total <- ggplot(data=DATA, aes(x=PAYTOTAL, y=WINPCT)) +
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE) +
+  labs(x="Total Payroll ($ millions)", y="Win %")
+  
+p.26 <- ggplot(data=DATA, aes(x=PAY26, y=WINPCT)) +
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE) +
+  labs(x="26-man Payroll ($ millions)", y="Win %") 
+
+p.histogram <- ggplot(data=DATA, aes(x=WINPCT)) +
+  geom_histogram(color="black", fill="blue3")
+
+library(patchwork)
+
+p.histogram / (p.total + p.26) +
+  plot_annotation(title="MLB payroll and wins") & theme(plot.title=element_text(face="bold", size=18, hjust=0.5))
+
+```
+
+## Legends
+
+The geom_col() command below tells ggplot to plot columns. The columns will be filled with colors, so ggplot2 will add a legend to the plot. Click the Run Code button below:
+
+```{r LEGEND1, exercise=TRUE, exercise.lines=35}
+
+library(tidyverse)
+
+DATA <- tribble(
+  ~RACE                          , ~PARTY               , ~PCT    ,
+  "White, non-Hispanic"          , "Democrat"           , 0.2676422,
+  "White, non-Hispanic"          , "Independent / Other", 0.3238014,
+  "White, non-Hispanic"          , "Republican"         , 0.4085564,
+  "Black, non-Hispanic"          , "Democrat"           , 0.6743375,
+  "Black, non-Hispanic"          , "Independent / Other", 0.2774533,
+  "Black, non-Hispanic"          , "Republican"         , 0.0482093,
+  "Hispanic"                     , "Democrat"           , 0.4365752,
+  "Hispanic"                     , "Independent / Other", 0.3878438,
+  "Hispanic"                     , "Republican"         , 0.1755811,
+  "Asian or Native Hawaiian"     , "Democrat"           , 0.4496745,
+  "Asian or Native Hawaiian"     , "Independent / Other", 0.330942 ,
+  "Asian or Native Hawaiian"     , "Republican"         , 0.2193835,
+  "Native American/Alaska Native", "Democrat"           , 0.2615603,
+  "Native American/Alaska Native", "Independent / Other", 0.5508099,
+  "Native American/Alaska Native", "Republican"         , 0.1876298,
+  "Multiple races, non-Hispanic" , "Democrat"           , 0.3873582,
+  "Multiple races, non-Hispanic" , "Independent / Other", 0.4645421,
+  "Multiple races, non-Hispanic" , "Republican"         , 0.1480997)
+
+DATA$RACE <- factor(DATA$RACE, levels=rev(c("Black, non-Hispanic","Multiple races, non-Hispanic","Hispanic","Native American/Alaska Native","Asian or Native Hawaiian","White, non-Hispanic")))
+
+ggplot(data=DATA, aes(x=100*PCT, y=RACE, fill=PARTY)) +
+  geom_col(color="black", size=1.05, width=1) +
+  scale_fill_manual(values=rev(c("Democrat"="blue3", "Independent / Other"="gray80", "Republican"="red3"))) +
+  theme(
+    axis.ticks.x       = element_blank(),
+    axis.ticks.y       = element_blank(),
+    axis.title.x       = element_blank(),
+    axis.title.y       = element_blank(),
+    panel.background   = element_rect(fill="white"))
+
+```
+
+---
+
+The theme code below for legend.position tells ggplot to put the legend at the bottom of the plot, and the **guides** command tells ggplot to do a few things, such as put all of the legend in one row. Click the Run Code button below:
+
+```{r LEGEND2, exercise=TRUE, exercise.lines=37}
+
+library(tidyverse)
+
+DATA <- tribble(
+  ~RACE                          , ~PARTY               , ~PCT    ,
+  "White, non-Hispanic"          , "Democrat"           , 0.2676422,
+  "White, non-Hispanic"          , "Independent / Other", 0.3238014,
+  "White, non-Hispanic"          , "Republican"         , 0.4085564,
+  "Black, non-Hispanic"          , "Democrat"           , 0.6743375,
+  "Black, non-Hispanic"          , "Independent / Other", 0.2774533,
+  "Black, non-Hispanic"          , "Republican"         , 0.0482093,
+  "Hispanic"                     , "Democrat"           , 0.4365752,
+  "Hispanic"                     , "Independent / Other", 0.3878438,
+  "Hispanic"                     , "Republican"         , 0.1755811,
+  "Asian or Native Hawaiian"     , "Democrat"           , 0.4496745,
+  "Asian or Native Hawaiian"     , "Independent / Other", 0.330942 ,
+  "Asian or Native Hawaiian"     , "Republican"         , 0.2193835,
+  "Native American/Alaska Native", "Democrat"           , 0.2615603,
+  "Native American/Alaska Native", "Independent / Other", 0.5508099,
+  "Native American/Alaska Native", "Republican"         , 0.1876298,
+  "Multiple races, non-Hispanic" , "Democrat"           , 0.3873582,
+  "Multiple races, non-Hispanic" , "Independent / Other", 0.4645421,
+  "Multiple races, non-Hispanic" , "Republican"         , 0.1480997)
+
+DATA$RACE <- factor(DATA$RACE, levels=rev(c("Black, non-Hispanic","Multiple races, non-Hispanic","Hispanic","Native American/Alaska Native","Asian or Native Hawaiian","White, non-Hispanic")))
+
+ggplot(data=DATA, aes(x=100*PCT, y=RACE, fill=PARTY)) +
+  geom_col(color="black", size=1.05, width=1) +
+  scale_fill_manual(values=rev(c("Democrat"="blue3", "Independent / Other"="gray80", "Republican"="red3"))) +
+  guides(fill=guide_legend(reverse=F, nrow=1, byrow=TRUE, title="")) +
+  theme(
+    axis.ticks.x       = element_blank(),
+    axis.ticks.y       = element_blank(),
+    axis.title.x       = element_blank(),
+    axis.title.y       = element_blank(),
+    legend.position    = "bottom",
+    panel.background   = element_rect(fill="white"))
+
+```
+
+The legend can be shut off with the theme element of **legend.position = "none"**.
+
+By the way, the above plot has the plot region range from Democrat > Independent > Republican, but has the reverse order for the legend. Can you figure out how to get the left-to-right order for the plot region to be the same as the left-to-right order for the legend?
+
+## Emphasis
+
+The two plots below illustrate how the emphasis can be changed for the same data by switching the facet variable. The first plot has facets based on race, which emphasizes the difference across age groups. The second plot has facets by age, which emphasizes the difference across racial groups. 
+
+```{r emphasis1, echo=FALSE, exercise=FALSE, eval=TRUE, results=FALSE, fig.width=8, fig.height=4}
+
+learnr::initialize_tutorial()
+
+library(tidyverse)
+
+DATA <- tribble(
+~AGE, ~ITEM, ~RACE, ~PCT, ~CILO, ~CIHI,
+"Age 18-29","0 to 24","Whites",0.1686075,0.125517,0.2227235,
+"Age 18-29","25 to 49","Whites",0.2258218,0.1745539,0.2869135,
+"Age 18-29","50","Whites",0.0491381,0.027793,0.0854356,
+"Age 18-29","51 to 75","Whites",0.2707414,0.2160958,0.3333297,
+"Age 18-29","76 to 100","Whites",0.2841337,0.2276716,0.3482837,
+"Age 18-29","0 to 24","Blacks",0.4298258,0.2903636,0.5813931,
+"Age 18-29","25 to 49","Blacks",0.3173413,0.1963695,0.4693152,
+"Age 18-29","50","Blacks",0.048522,0.0089412,0.2237587,
+"Age 18-29","51 to 75","Blacks",0.1696017,0.0965342,0.2807865,
+"Age 18-29","76 to 100","Blacks",0.0347092,0.0093621,0.1203453,
+"Age 18-29","0 to 24","Hispanics",0.2210459,0.1426287,0.3261748,
+"Age 18-29","25 to 49","Hispanics",0.1639248,0.1095114,0.2381445,
+"Age 18-29","50","Hispanics",0.1007021,0.0496316,0.1936177,
+"Age 18-29","51 to 75","Hispanics",0.2340969,0.1579551,0.3324516,
+"Age 18-29","76 to 100","Hispanics",0.2802302,0.1932706,0.3875214,
+"Age 18-29","0 to 24","Other",0.1799807,0.1005913,0.3010538,
+"Age 18-29","25 to 49","Other",0.2835058,0.1587469,0.4534617,
+"Age 18-29","50","Other",0.0279455,0.0065446,0.111475,
+"Age 18-29","51 to 75","Other",0.3626855,0.2336636,0.5150665,
+"Age 18-29","76 to 100","Other",0.1458826,0.0655658,0.2936658,
+"Age 30-45","0 to 24","Whites",0.0880538,0.0688471,0.1119744,
+"Age 30-45","25 to 49","Whites",0.1490723,0.1252224,0.1765479,
+"Age 30-45","50","Whites",0.0528802,0.0363371,0.0763582,
+"Age 30-45","51 to 75","Whites",0.2651047,0.2341556,0.2985497,
+"Age 30-45","76 to 100","Whites",0.444889,0.4087117,0.48166,
+"Age 30-45","0 to 24","Blacks",0.2473897,0.1837595,0.3242992,
+"Age 30-45","25 to 49","Blacks",0.3215109,0.2441783,0.4100479,
+"Age 30-45","50","Blacks",0.0686421,0.0413368,0.1118792,
+"Age 30-45","51 to 75","Blacks",0.2180175,0.1547748,0.2979913,
+"Age 30-45","76 to 100","Blacks",0.1178969,0.0727645,0.1854246,
+"Age 30-45","0 to 24","Hispanics",0.1405747,0.0891829,0.2146035,
+"Age 30-45","25 to 49","Hispanics",0.1712986,0.1257236,0.229066,
+"Age 30-45","50","Hispanics",0.060349,0.0333786,0.1067063,
+"Age 30-45","51 to 75","Hispanics",0.3072251,0.2453594,0.3768989,
+"Age 30-45","76 to 100","Hispanics",0.3205526,0.2582513,0.3899815,
+"Age 30-45","0 to 24","Other",0.1252955,0.0775243,0.1962415,
+"Age 30-45","25 to 49","Other",0.1951634,0.1266456,0.2885051,
+"Age 30-45","50","Other",0.0762974,0.0382879,0.1463,
+"Age 30-45","51 to 75","Other",0.3186173,0.2348634,0.4159998,
+"Age 30-45","76 to 100","Other",0.2846264,0.2003887,0.3871309,
+"Age 46-59","0 to 24","Whites",0.0289146,0.0183031,0.045394,
+"Age 46-59","25 to 49","Whites",0.0765872,0.0587539,0.0992624,
+"Age 46-59","50","Whites",0.031878,0.0207482,0.0486813,
+"Age 46-59","51 to 75","Whites",0.2623021,0.2280894,0.2996544,
+"Age 46-59","76 to 100","Whites",0.6003181,0.5594169,0.6398667,
+"Age 46-59","0 to 24","Blacks",0.2029044,0.1311466,0.3003523,
+"Age 46-59","25 to 49","Blacks",0.2460165,0.171898,0.3390102,
+"Age 46-59","50","Blacks",0.0785931,0.0413865,0.1442167,
+"Age 46-59","51 to 75","Blacks",0.2879665,0.2003525,0.3949698,
+"Age 46-59","76 to 100","Blacks",0.1845194,0.1238305,0.2659244,
+"Age 46-59","0 to 24","Hispanics",0.0790971,0.0343998,0.1715537,
+"Age 46-59","25 to 49","Hispanics",0.1759927,0.1123977,0.2648339,
+"Age 46-59","50","Hispanics",0.0705534,0.0347834,0.1378541,
+"Age 46-59","51 to 75","Hispanics",0.2658014,0.184284,0.3671479,
+"Age 46-59","76 to 100","Hispanics",0.4085554,0.3102326,0.5147835,
+"Age 46-59","0 to 24","Other",0.0394191,0.0110365,0.1311161,
+"Age 46-59","25 to 49","Other",0.1522902,0.0886397,0.2491515,
+"Age 46-59","50","Other",0.0303505,0.0095767,0.0920012,
+"Age 46-59","51 to 75","Other",0.4064893,0.2907918,0.5335858,
+"Age 46-59","76 to 100","Other",0.371451,0.2611008,0.4970653,
+"Age 60+","0 to 24","Whites",0.0101233,0.0053504,0.0190725,
+"Age 60+","25 to 49","Whites",0.0534469,0.0415213,0.0685529,
+"Age 60+","50","Whites",0.013854,0.008874,0.0215679,
+"Age 60+","51 to 75","Whites",0.2511503,0.2264746,0.2775499,
+"Age 60+","76 to 100","Whites",0.6714254,0.6426687,0.698952,
+"Age 60+","0 to 24","Blacks",0.0897313,0.0426382,0.1791068,
+"Age 60+","25 to 49","Blacks",0.1742434,0.1083386,0.2681815,
+"Age 60+","50","Blacks",0.043537,0.0206152,0.0896133,
+"Age 60+","51 to 75","Blacks",0.4234502,0.3277676,0.5252404,
+"Age 60+","76 to 100","Blacks",0.2562281,0.1733786,0.3613605,
+"Age 60+","0 to 24","Hispanics",0.0609062,0.0219529,0.157825,
+"Age 60+","25 to 49","Hispanics",0.0339614,0.0126179,0.0881835,
+"Age 60+","50","Hispanics",0.0365783,0.013317,0.0964974,
+"Age 60+","51 to 75","Hispanics",0.2722974,0.1807325,0.3882669,
+"Age 60+","76 to 100","Hispanics",0.5962568,0.4774693,0.7047391,
+"Age 60+","0 to 24","Other",0.0201068,0.0059742,0.0654697,
+"Age 60+","25 to 49","Other",0.074297,0.0319437,0.1633308,
+"Age 60+","50","Other",0.028154,0.0082708,0.0914298,
+"Age 60+","51 to 75","Other",0.1951647,0.1240613,0.293371,
+"Age 60+","76 to 100","Other",0.6822776,0.5659573,0.7795664)
+
+theme.z <- theme(
+  panel.background=element_rect(fill="black"),
+  panel.grid.major.x=element_blank(), 
+  panel.grid.minor.x=element_blank(), 
+  panel.grid.major.y=element_blank(),
+  panel.grid.minor.y=element_blank(), 
+  panel.border=element_rect(color="black", size=2, fill=NA), 
+  panel.spacing.x=unit(1, "lines"),
+  panel.spacing.y=unit(0.5, "lines"),
+  strip.background=element_rect(color="black", fill="black"),
+  strip.text.x=element_text(color="white", face="bold", size=15),
+  axis.title.x=element_blank(), 
+  axis.title.y=element_blank(), 
+  axis.text.x=element_text(color="black", size=12), 
+  axis.text.y=element_text(color="black", size=12), 
+  axis.ticks.x=element_blank(), 
+  axis.ticks.y=element_blank(),
+  plot.title=element_text(face="bold", margin=margin(t=0, b=13), size=16, hjust=0.5),
+  plot.subtitle=element_text(hjust=0.5),
+  plot.caption=element_text(size=10, hjust=0, margin=margin(10,0,0,0)),
+  legend.text=element_text(size=12),
+  legend.position="bottom")
+
+DATA$AGE   <- factor(DATA$AGE , levels=c("Age 18-29", "Age 30-45", "Age 46-59", "Age 60+"))
+DATA$ITEM  <- factor(DATA$ITEM, levels=rev(c("0 to 24", "25 to 49", "50", "51 to 75", "76 to 100")))
+DATA$RACE  <- factor(DATA$RACE, levels=c("Whites", "Blacks", "Hispanics", "Other"))
+AGE.ORDER  <- rev(c("Age 18-29", "Age 30-45", "Age 46-59", "Age 60+"))
+RACE.ORDER <- c("Other", "Hispanics", "Blacks", "Whites")
+
+ggplot(DATA, aes(x=AGE, y=100*PCT, fill=ITEM)) +
+    geom_col(color="black", size=1.1, width=0.8) +
+    scale_fill_manual(values=rev(c("red3", "red1", "white", "green1", "green3")), name="Rating") +
+    coord_flip() +
+    facet_wrap(~RACE, ncol=4, dir="h") +
+    scale_x_discrete(limits=AGE.ORDER, labels=AGE.ORDER, name="") +
+    scale_y_continuous(limits=c(0, 100.01), breaks=seq(0, 100, by=25)) +    
+    labs(title="Ratings of Police on 0-to-100 Feeling Thermometers", caption="Plot indicates percentages in each group. Overall sample sizes: Whites 3,701. Blacks 539. Hispanics 647. Other 384.\nData source: American National Election Studies. 2021.\nANES 2020 Social Media Study: Pre-Election Data [dataset and documentation]. March 8, 2021 version. www.electionstudies.org") +
+    theme.z + guides(fill=guide_legend(reverse=T))
+
+ggplot(DATA, aes(x=RACE, y=100*PCT, fill=ITEM)) +
+    geom_col(color="black", size=1.1, width=0.8) +
+    scale_fill_manual(values=rev(c("red3", "red1", "white", "green1", "green3")), name="Rating") +
+    coord_flip() +
+    facet_wrap(~AGE, ncol=4, dir="h") +
+    scale_x_discrete(limits=RACE.ORDER, labels=RACE.ORDER, name="") +
+    scale_y_continuous(limits=c(0, 100.01), breaks=seq(0, 100, by=25)) +    
+    labs(title="Ratings of Police on 0-to-100 Feeling Thermometers", caption="Plot indicates percentages in each group. Overall sample sizes: Whites 3,701. Blacks 539. Hispanics 647. Other 384.\nData source: American National Election Studies. 2021.\nANES 2020 Social Media Study: Pre-Election Data [dataset and documentation]. March 8, 2021 version. www.electionstudies.org") +
+    theme.z + guides(fill=guide_legend(reverse=T))
+
+```
+
+---
+
+This next set of plots indicates how shading can be used to draw attention to the pattern that you want readers to focus on:
+
+```{r emphasis2, echo=FALSE, exercise=FALSE, eval=TRUE, results=FALSE, fig.width=8, fig.height=5}
+
+learnr::initialize_tutorial()
+
+library(tidyverse)
+
+DATA <- tribble(
+~FACET, ~ITEM, ~PE, ~CILO, ~CIHI,
+"White respondents","Mean ratings about Whites",71.03041,70.47394,71.58688,
+"White respondents","Mean ratings about Blacks",70.14302,69.56779,70.71825,
+"White respondents","Mean ratings about Hispanics",70.48517,69.93254,71.03779,
+"White respondents","Mean ratings about Asians",70.24268,69.68457,70.80079,
+"Black respondents","Mean ratings about Whites",62.20464,60.24225,64.16702,
+"Black respondents","Mean ratings about Blacks",85.36274,83.93272,86.79275,
+"Black respondents","Mean ratings about Hispanics",71.07198,69.36505,72.77891,
+"Black respondents","Mean ratings about Asians",66.19568,64.31992,68.07144,
+"Hispanic respondents","Mean ratings about Whites",65.17344,63.46178,66.8851,
+"Hispanic respondents","Mean ratings about Blacks",72.46703,70.94579,73.98828,
+"Hispanic respondents","Mean ratings about Hispanics",80.54528,79.03815,82.05241,
+"Hispanic respondents","Mean ratings about Asians",72.30451,70.77138,73.83765,
+"Asian respondents","Mean ratings about Whites",67.40263,64.5361,70.26916,
+"Asian respondents","Mean ratings about Blacks",70.54255,68.01257,73.07253,
+"Asian respondents","Mean ratings about Hispanics",69.68176,67.15608,72.20744,
+"Asian respondents","Mean ratings about Asians",80.27946,78.09967,82.45924)
+
+DATA$ITEM  <- factor(DATA$ITEM, levels=rev(c("Mean ratings about Whites", "Mean ratings about Blacks", "Mean ratings about Hispanics", "Mean ratings about Asians")))
+DATA$FACET <- factor(DATA$FACET, levels=c("White respondents", "Black respondents", "Hispanic respondents", "Asian respondents"))
+
+DATA$max.w <- max(DATA$PE[DATA$FACET=="White respondents"], na.rm=TRUE)
+DATA$min.w <- min(DATA$PE[DATA$FACET=="White respondents"], na.rm=TRUE)
+DATA$max.b <- max(DATA$PE[DATA$FACET=="Black respondents"], na.rm=TRUE)
+DATA$min.b <- min(DATA$PE[DATA$FACET=="Black respondents"], na.rm=TRUE)
+DATA$max.h <- max(DATA$PE[DATA$FACET=="Hispanic respondents"], na.rm=TRUE)
+DATA$min.h <- min(DATA$PE[DATA$FACET=="Hispanic respondents"], na.rm=TRUE)
+DATA$max.a <- max(DATA$PE[DATA$FACET=="Asian respondents"], na.rm=TRUE)
+DATA$min.a <- min(DATA$PE[DATA$FACET=="Asian respondents"], na.rm=TRUE)
+
+theme.z <-   theme(
+        plot.background    = element_rect(fill="white"),
+        plot.margin        = unit(c(0.5,0.5,0.5,0.5),"cm"),
+        plot.title         = element_text(face="bold", margin=margin(t=0, b=12), size=18, hjust=0.5),
+        plot.subtitle      = element_text(size=12, hjust=0.5, margin=margin(b=7)),
+        plot.caption       = element_text(size=9, hjust=0, margin=margin(t=7)),
+        strip.background   = element_rect(color="black", fill="black"),
+        strip.text.x       = element_text(size=14, color="white", face="bold"),
+        panel.background   = element_rect(fill="lightsteelblue2", color="black", size=0.5, linetype="solid"),
+        panel.border       = element_rect(fill=NA, color="black", linetype="solid", size=1.5),
+        panel.grid.major.x = element_blank(), 
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.x = element_blank(), 
+        panel.grid.minor.y = element_blank(),
+        panel.spacing.x    = unit(2, "lines"),
+        panel.spacing.y    = unit(1, "lines"),
+        axis.text.x        = element_text(size=12, color="black", margin=margin(t=7, b=5)),
+        axis.text.y        = element_text(size=12, color="black", margin=margin(l=7, r=7)),
+        axis.ticks.y       = element_blank(),
+        axis.ticks.x       = element_blank(),
+        axis.title.y       = element_blank(),
+        axis.title.x       = element_text(size=12, color="black"))
+
+ggplot(DATA, aes(PE, ITEM)) +
+  geom_point(size=3.5) +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  facet_wrap(~FACET, nrow=2, dir="v") +
+  scale_x_continuous(name="", breaks=seq(0,100,25), limits=c(0,100), expand=c(0,0), labels=scales::number_format(accuracy=1)) +
+  labs(title="How racial groups rate each other", caption="Error bars are 83.4% confidence intervals\nData source: American National Election Studies. 2021. ANES 2020 Time Series Study\nPreliminary Release: Combined Pre-Election and Post-Election Data [dataset and documentation].\nMarch 24, 2021 version. www.electionstudies.org.") + theme.z
+
+ggplot(DATA, aes(PE, ITEM)) +
+
+  geom_rect(data=filter(DATA, FACET=="White respondents"), aes(xmin=min.w, xmax=max.w, ymin=-Inf, ymax=Inf), fill="lightsteelblue3", color="black", inherit.aes=FALSE) +
+  geom_rect(data=filter(DATA, FACET=="Black respondents"), aes(xmin=min.b, xmax=max.b, ymin=-Inf, ymax=Inf), fill="lightsteelblue3", color="black", inherit.aes=FALSE) +
+  geom_rect(data=filter(DATA, FACET=="Hispanic respondents"), aes(xmin=min.h, xmax=max.h, ymin=-Inf, ymax=Inf), fill="lightsteelblue3", color="black", inherit.aes=FALSE) +
+  geom_rect(data=filter(DATA, FACET=="Asian respondents"), aes(xmin=min.a, xmax=max.a, ymin=-Inf, ymax=Inf), fill="lightsteelblue3", color="black", inherit.aes=FALSE) +
+
+  geom_point(size=3.5) +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  facet_wrap(~FACET, nrow=2, dir="v") +
+  scale_x_continuous(name="", breaks=seq(0,100,25), limits=c(0,100), expand=c(0,0), labels=scales::number_format(accuracy=1)) +
+  labs(title="How racial groups rate each other", caption="Error bars are 83.4% confidence intervals\nData source: American National Election Studies. 2021. ANES 2020 Time Series Study\nPreliminary Release: Combined Pre-Election and Post-Election Data [dataset and documentation].\nMarch 24, 2021 version. www.electionstudies.org.") + theme.z
+
+```
+
+## Review questions
+
+```{r review1, echo=FALSE, exercise=FALSE}
+question("Which one of the following is used to start a new line of text?",
+  answer("\\1"),
+  answer("\\b"),
+  answer("\\n", correct=TRUE),
+  answer("\\t"),
+  allow_retry=TRUE
+)
+```
+
+```{r review2, echo=FALSE, exercise=FALSE}
+question("Which one of the following would be returned by: rep.int(7,3)?",
+  answer("7 3"),
+  answer("7 7 7", correct=TRUE),
+  answer("21"),
+  answer("3 3 3 3 3 3 3"),
+  allow_retry=TRUE
+)
+```
+
+```{r review3, echo=FALSE, exercise=FALSE}
+question("How would R interpret FIRST$SECOND?",
+  answer("The first vector of the second dataset"),
+  answer("The second vector of the first dataset"),
+  answer("The vector FIRST in the dataset SECOND"),
+  answer("The vector SECOND in the dataset FIRST", correct=TRUE),
+  allow_retry=TRUE
+)
+```
+
+```{r review4, echo=FALSE, exercise=FALSE}
+question("Which one of the following can be used to reorder the elements of a character vector?",
+  answer("facet"),
+  answer("factor", correct=TRUE),
+  answer("str_wrap"),
+  answer("tribble"),
+  allow_retry=TRUE
+)
+```
+
+```{r review5, echo=FALSE, exercise=FALSE}
+question("Which one of the following would be returned by: seq(0,6,2)?",
+  answer("0 6 2"),
+  answer("0 2 6"),
+  answer("0 2 4 6", correct=TRUE),
+  answer("8"),
+  allow_retry=TRUE
+)
+```
+
+```{r review6, echo=FALSE, exercise=FALSE}
+question("Which one of the following would be returned by: seq(0,5,2)?",
+  answer("0 5 2"),
+  answer("0 2 5"),
+  answer("0 2 4", correct=TRUE),
+  answer("0 2 4 5"),
+  allow_retry=TRUE
+)
+```
+
+```{r review7, echo=FALSE, exercise=FALSE}
+question("Suppose that a ggplot axis command for a continuous vector indicates to put breaks at seq(0,100,50) but does not indicate what the the labels should be. ggplot will then ___.",
+  answer("not plot any labels"),
+  answer("plot labels at 0 and 100"),
+  answer("plot labels at 0, 50, and 100", correct=TRUE),
+  allow_retry=TRUE
+)
+```
+
+```{r review8, echo=FALSE, exercise=FALSE}
+question("Which one of the following is the number used for left justification of horizontal text?",
+  answer("0", correct=TRUE),
+  answer("0.5"),
+  answer("1"),
+  answer("-1"),
+  allow_retry=TRUE
+)
+```
+
+```{r review9, echo=FALSE, exercise=FALSE}
+question("Which one of the following can be used to produce multiple panels for a single plot?",
+  answer("facet", correct=TRUE),
+  answer("factor"),
+  answer("str_wrap"),
+  answer("tribble"),
+  allow_retry=TRUE
+)
+```
+
+```{r review10, echo=FALSE, exercise=FALSE}
+question("Which one of the following will produce a linear regression line?",
+  answer("geom_line(method=\"reg\")"),
+  answer("geom_ols()"),
+  answer("geom_reg()"),
+  answer("geom_smooth(method=\"lm\")", correct=TRUE),
+  allow_retry=TRUE
+)
+```
+
+## Troubleshooting
+
+1. Fix the code below so that the columns plot:
+
+```{r trouble1, exercise=TRUE, exercise.lines=8}
+
+library(tidyverse)
+
+DATA <- tribble(~X, ~Y, "A", 8, "B", 20, "C", 10, "D", 5)
+
+ggplot(data=DATA, aes(X,Y))
+  geom_col() 
+  
+```
+
+2. Fix the code below:
+
+```{r trouble2, exercise=TRUE, exercise.lines=12}
+
+library(tidyverse)
+
+DATA <- tribble(~X, ~Y, "A", 8, "B", 20, "C", 10, "D", 5)
+
+ggplot(data=DATA, aes(x=X, y=Y)) +
+  geom_col() +
+  labs(title="Plot 1") + 
+  theme()
+    plot.title= element_text(size=20, margin=margin(t=0,b=15)
+       )
+```
+
+3. Edit the code below so that the x-axis order from left-to-right is "Male" "Female". Do not change the DATA line.
+
+```{r trouble3, exercise=TRUE, exercise.lines=10}
+
+DATA <- tribble(~X, ~Y, "Male", 40, "Female", 60)
+
+ggplot(data=DATA, aes(x=X, y=Y, fill=X)) +
+  geom_col() 
+```
+
+## Practice 1
+
+Plot the data below. Color the data for "Joe Biden voters" blue3 and the data for "Donald Trump voters" red3. Add a title of "Mean rating about police". Add a caption of "Data source: ANES 2020 Time Series Study. Error bars are 83.4% confidence intervals."; this caption might be better on two lines.
+
+```{r practice1, exercise=TRUE, exercise.lines=50}
+
+library(tidyverse)
+
+DATA <- tribble(
+   ~VOTERS              ,  ~PE, ~CILO, ~CIHI,
+   "Joe Biden voters"   , 59.9,  58.9,  60.9,
+   "Donald Trump voters", 84.3,  83.5,  85.0)
+```
+
+## Practice 2
+
+For the plot below, see whether you can do each of the following:
+
+1. Order the columns from Strong Democrat on the left to Strong Republican on the right.
+2. Color the fill for male as "lightblue" and the fill for female as "pink".
+3. Put the fill for female at the bottom and the fill for male at the top.
+4. Remove the PCT and PARTY from the axis labels.
+5. Get the y-axis to extend only from 0 to 100 so that there is no buffer below 0 or above 100.
+6. Outline the edge of the columns in black.
+7. Remove the ticks on the x-axis.
+
+```{r practice2, exercise=TRUE, exercise.lines=23}
+
+library(tidyverse)
+
+DATA <- tribble(
+  ~PARTY                  , ~GENDER , ~PCT,
+  "Strong\nDemocrat"       , "Male"  ,   39,
+  "Strong\nDemocrat"       , "Female",   61,
+  "Not strong\nDemocrat"   , "Male"  ,   45,
+  "Not strong\nDemocrat"   , "Female",   55,
+  "Independent\nDemocrat"  , "Male"  ,   51,
+  "Independent\nDemocrat"  , "Female",   49,
+  "Independent"           , "Male"  ,   51,
+  "Independent"           , "Female",   49,
+  "Independent\nRepublican", "Male"  ,   55,
+  "Independent\nRepublican", "Female",   45,
+  "Not strong\nRepublican" , "Male"  ,   52,
+  "Not strong\nRepublican" , "Female",   48,
+  "Strong\nRepublican"     , "Male"  ,   52,
+  "Strong\nRepublican"     , "Female",   48)
+
+ggplot(DATA, aes(PARTY, PCT, fill=GENDER)) +
+   geom_col()
+
+```
+
+## Practice 3
+
+Plot the data below, which are mean ratings about feminists on a 0-to-100 scale, among the indicated groups. Plot the data separated into facets. Consider whether this faceting is better by gender or by party, and consider whether this faceting is better horizontal or vertical. Include a title indicating the topic of the data and a caption indicating the data source, which is the ANES 2020 Time Series Study.
+
+```{r practice3, exercise=TRUE, exercise.lines=50}
+
+library(tidyverse)
+
+DATA <- tribble(
+   ~GENDER,	       ~PARTY,	    ~PE,    ~CILO,    ~CIHI,   ~N,
+    "Male",	   "Democrat", 66.61198, 64.70557, 68.51839,  956,
+    "Male",	"Independent", 54.10073, 52.59379, 55.60767, 1111,
+    "Male",	 "Republican", 41.33121, 39.91662, 42.74580, 1117,
+  "Female",	   "Democrat", 74.28724, 73.06108, 75.51341, 1593,
+  "Female",	"Independent", 59.79417, 58.15282, 61.43551, 1105,
+  "Female",	 "Republican", 44.53630, 43.17696, 45.89564, 1132)
+```
+
+## R gallery
+
+[Gallery of types of R tidyverse plots and corresponding code:]( https://www.ljzigerell.com/wp-content/uploads/2023/02/R-gallery.html)
