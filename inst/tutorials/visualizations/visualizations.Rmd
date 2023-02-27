@@ -56,7 +56,7 @@ First, R packages must be put on your computer using a command such as **install
 
 ```{r tidyverse_install, echo=TRUE, eval=TRUE, exercise=FALSE, message=TRUE, warning=TRUE}
 
-install.packages("tidyverse", dependencies=TRUE, repos="http://cran.us.r-project.org")
+install.packages("tidyverse", repos="http://cran.us.r-project.org")
 
 ```
 
