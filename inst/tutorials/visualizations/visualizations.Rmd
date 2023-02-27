@@ -1,18 +1,18 @@
 ---
-title: "visualizations"
+title: "Visualizations"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-install.packages("learnr", repos = "http://cran.us.r-project.org")
+install.packages("learnr", dependencies=TRUE, repos="http://cran.us.r-project.org")
 library(learnr)
 knitr::opts_chunk$set(echo=FALSE)
 ```
 
 ## Basic plots in base R
 
-Let's get data for two variables (X and Y). Let's use the combine function (c) to combine numbers, and then use the assign function (<-) to assign those numbers to X and Y. Then let's plot a scatterplot of X and Y:
+Let's get data for two variables: X and Y. Let's use the combine function (c) to combine numbers, and then let's use the assign function (<-) to assign those numbers to X and Y. Then let's plot a scatterplot of X and Y:
 
 ```{r base1, exercise=TRUE, exercise.lines=4, fig.width=8, fig.height=4}
 
@@ -40,27 +40,31 @@ Let's add a few features to the plot, such as points that are larger and are col
 
 X <- c(1,2,3,4,5)
 Y <- c(4,5,8,9,7)
-plot(X, Y, pch=21, bg="lightblue", col="blue4", cex=4, lwd=2.5)
+plot(X, Y, pch=21, cex=4, bg="lightblue", col="blue4", lwd=2.5)
 
 ```
 
-This is an example of plotting with the base functions of R that are available when a session of R is opened. But packages of functions can be added to base R...
+---
+
+This is an example of plotting with the base functions of R, which are available when a session of R is opened. But packages of functions can be added to base R...
 
 ## Loading the tidyverse package
 
 One of the packages that can go beyond the base R functions is called the **tidyverse**, which is useful for visualizing data.
 
-First, R packages must be put on your computer using a command such as **install.packages("tidyverse")** or **install.packages("tidyverse", dependencies=TRUE, repos="http://cran.us.r-project.org")**, which will download the **tidyverse** package to your computer.
+First, R packages must be put on your computer using a command such as **install.packages("tidyverse")**, which will download the **tidyverse** package to your computer. The command below will install dependent packages and draw from the CRAN repository:
 
-```{r tidyverse_install, eval=TRUE, exercise=FALSE, message=TRUE, warning=TRUE}
+```{r tidyverse_install, echo=TRUE, eval=TRUE, exercise=FALSE, message=TRUE, warning=TRUE}
 
-install.packages("tidyverse", repos="http://cran.us.r-project.org")
+install.packages("tidyverse", dependencies=TRUE, repos="http://cran.us.r-project.org")
 
 ```
 
+---
+
 Once a package's files are on your computer, the package can be loaded into a working session of R using the **library** command. The output from **library(tidyverse)** below should indicate that tidyverse packages such as **ggplot2**, **tibble**, and **stringr** have been attached. The output should also indicate conflicts involving functions with the same name in which one function masks (hides) another function.
 
-```{r tidyverse_library, exercise=FALSE, message=TRUE, warning=TRUE}
+```{r tidyverse_library, echo=TRUE, exercise=FALSE, message=TRUE, warning=TRUE}
 
 library(tidyverse)
 
@@ -111,6 +115,17 @@ read.csv(G:/plots/file.csv)
 ```
 
 ...which would open the file named "file.csv" in the G:/plots directory.
+
+---
+
+Let's try to read a CSV file by going and getting the file:
+
+```{r readCSV, exercise=TRUE, message=TRUE, warning=TRUE}
+
+DATA <- read.csv(file.choose())
+DATA
+
+```
 
 ## Setting up a ggplot
 
@@ -196,7 +211,7 @@ GUNIMP <- tribble(
   "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
 
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
-  geom_col(size=1.1, width=0.8, color="black", 
+  geom_col(linewidth=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2)))
 
 ```
@@ -244,7 +259,7 @@ GUNIMP <- tribble(
   "Strong\nRepublican"     , 0.3374613, 0.308117 , 0.3668057) 
 
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25, color="orange") +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25, color="orange") +
   geom_point(size=5, shape=21, color="black", 
              fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2)))
 
@@ -271,7 +286,7 @@ GUNIMP <- tribble(
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_point(size=5, shape=21, color="black", 
              fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25, color="orange") 
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25, color="orange") 
 
 ```
 
@@ -416,7 +431,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) 
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) 
 
 ```
 
@@ -463,7 +478,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1)) 
 
 ```
@@ -491,7 +506,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0))
 
 ```
@@ -519,7 +534,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2))
 
 ```
@@ -547,7 +562,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(from=0, by=0.2, to=1))
 
 ```
@@ -575,7 +590,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), 
                      breaks=seq(from=0, by=0.5, to=1), labels=c("Zero percent", "Half", "100%"))
 
@@ -604,7 +619,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis())
 
 ```
@@ -665,7 +680,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
   labs(title="Predicted probability of responding \"extremely important\" about how important the respondent considers the issue of the federal gun laws")
 
@@ -694,7 +709,7 @@ GUNIMP$PID <- factor(GUNIMP$PID, levels=GUNIMP$PID)
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
   labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption="Note: Error bars are 83.4% confidence intervals. Estimates are from a logit regression, with weights applied and with categorical controls for gender, race, age group, education, marital status, household income, and gun ownership set at their means. Data source: American National Election Studies 2020 Time Series Study (2021).")
 
@@ -729,7 +744,7 @@ CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI),linewidth=0.75, width=0.25) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
   labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION)
 
@@ -788,7 +803,7 @@ CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   geom_text(aes(y=CIHI+0.05, label=PE, size=5, hjust=0.5, vjust=0), show.legend=FALSE) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
   labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION)
@@ -824,7 +839,7 @@ CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   geom_text(aes(y=CIHI+0.05, label=scales::percent(PE, accuracy=1)), size=5, hjust=0.5, vjust=0) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
   labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION)
@@ -888,7 +903,7 @@ CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   geom_text(aes(y=CIHI+0.05, label=scales::percent(PE, accuracy=1)), size=5, hjust=0.5, vjust=0) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
   labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION) +
@@ -934,7 +949,7 @@ CAPTION  <- str_wrap("Note: Error bars are 83.4% confidence intervals. Estimates
 ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
   geom_col(size=1.1, width=0.8, color="black", 
            fill=c(rep.int("blue3",2), rep.int("gray50",3), rep.int("red3",2))) +
-  geom_errorbar(aes(ymin=CILO, ymax=CIHI), size=0.75, width=0.25) +
+  geom_errorbar(aes(ymin=CILO, ymax=CIHI), linewidth=0.75, width=0.25) +
   geom_text(aes(y=CIHI+0.05, label=scales::percent(PE, accuracy=1)), size=5, hjust=0.5, vjust=0) +
   scale_y_continuous(limits=c(0,1), expand=c(0,0), breaks=seq(0,1,0.2), sec.axis=dup_axis()) +
   labs(title="Predicted probability of responding \"extremely important\" about\nhow important the respondent considers the issue of the federal gun laws", caption=CAPTION) +
@@ -945,8 +960,8 @@ ggplot(data=GUNIMP, aes(x=PID, y=PE)) +
     axis.ticks.y       = element_blank(),
     axis.title.x       = element_blank(),
     axis.title.y       = element_blank(),
-    panel.background   = element_rect(size=0.5, color="black", fill="gray90", linetype="solid"),
-    panel.border       = element_rect(size=1.8, color="black", fill=NA      , linetype="solid"),
+    panel.background   = element_rect(linewidth=0.5, color="black", fill="gray90", linetype="solid"),
+    panel.border       = element_rect(linewidth=1.8, color="black", fill=NA      , linetype="solid"),
     panel.grid.major.x = element_blank(), 
     panel.grid.major.y = element_blank(),
     panel.grid.minor.x = element_blank(), 
@@ -1013,7 +1028,7 @@ NRA$IDEO <- factor(NRA$IDEO, levels=unique(NRA$IDEO))
 
 ggplot(NRA, aes(PE, RACE)) +
   facet_wrap(~IDEO, nrow=1, dir="h") +
-  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, linewidth=0.75) +
   geom_point(data=filter(NRA, IDEO=="Liberal")     , size=3, color="blue3" ) +
   geom_point(data=filter(NRA, IDEO=="Moderate")    , size=3, color="gray70") +
   geom_point(data=filter(NRA, IDEO=="Conservative"), size=3, color="red3"  ) +
@@ -1050,7 +1065,7 @@ NRA$IDEO <- factor(NRA$IDEO, levels=unique(NRA$IDEO))
 
 ggplot(NRA, aes(PE, RACE)) +
   facet_wrap(~IDEO, ncol=1, dir="h") +
-  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, linewidth=0.75) +
   geom_point(data=filter(NRA, IDEO=="Liberal")     , size=3, color="blue3" ) +
   geom_point(data=filter(NRA, IDEO=="Moderate")    , size=3, color="gray70") +
   geom_point(data=filter(NRA, IDEO=="Conservative"), size=3, color="red3"  ) +
@@ -1087,7 +1102,7 @@ NRA$IDEO <- factor(NRA$IDEO, levels=unique(NRA$IDEO))
 
 ggplot(NRA, aes(PE, IDEO)) +
   facet_wrap(~RACE, ncol=2, dir="h") +
-  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, linewidth=0.75) +
   geom_point(data=filter(NRA, IDEO=="Liberal")     , size=3, color="blue3" ) +
   geom_point(data=filter(NRA, IDEO=="Moderate")    , size=3, color="gray70") +
   geom_point(data=filter(NRA, IDEO=="Conservative"), size=3, color="red3"  ) +
@@ -1125,7 +1140,7 @@ NRA$IDEO <- factor(NRA$IDEO, levels=unique(NRA$IDEO))
 ggplot(NRA, aes(PE, IDEO)) +
   geom_rect(data=filter(NRA, RACE=="Black"), aes(xmin=min(NRA$PE[NRA$RACE=="Black"]), xmax=max(NRA$PE[NRA$RACE=="Black"]), ymin=-Inf, ymax=Inf), fill="slategray1", color="black", inherit.aes=FALSE) +
   facet_wrap(~RACE, ncol=2, dir="h") +
-  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, linewidth=0.75) +
   geom_point(data=filter(NRA, IDEO=="Liberal")     , size=3, color="blue3" ) +
   geom_point(data=filter(NRA, IDEO=="Moderate")    , size=3, color="gray70") +
   geom_point(data=filter(NRA, IDEO=="Conservative"), size=3, color="red3"  ) +
@@ -1253,8 +1268,10 @@ TRUMP <- tribble(
   "West Virginia","WV",68.5,3.4, "Wisconsin","WI",47.22,3.4)
 
 TRUMP$TRUMP50 <- case_when(
-            TRUMP$PCTTRUMP>=50 ~ "Trump>=50",
-            TRUMP$PCTTRUMP< 50 ~ "Trump< 50")
+            TRUMP$PCTTRUMP>=50 ~ "Support Trump",
+            TRUMP$PCTTRUMP< 50 ~ "Oppose Trump")
+
+table(TRUMP$TRUMP50)
 
 ggplot(data=TRUMP, aes(x=TRUMP50, y=LGBT)) +
   geom_point()
@@ -1487,8 +1504,9 @@ By the way, the above plot has the plot region range from Democrat > Independent
 
 The two plots below illustrate how the emphasis can be changed for the same data by switching the facet variable. The first plot has facets based on race, which emphasizes the difference across age groups. The second plot has facets by age, which emphasizes the difference across racial groups. 
 
-```{r emphasis1, echo=FALSE, exercise=TRUE, eval=TRUE, results=FALSE, fig.width=8, fig.height=4}
+```{r emphasis1, echo=FALSE, exercise=FALSE, eval=TRUE, results=FALSE, fig.width=8, fig.height=4}
 
+learnr::initialize_tutorial()
 library(tidyverse)
 
 DATA <- tribble(
@@ -1575,27 +1593,27 @@ DATA <- tribble(
 "Age 60+","76 to 100","Other",0.6822776,0.5659573,0.7795664)
 
 theme.z <- theme(
-  panel.background=element_rect(fill="black"),
-  panel.grid.major.x=element_blank(), 
-  panel.grid.minor.x=element_blank(), 
-  panel.grid.major.y=element_blank(),
-  panel.grid.minor.y=element_blank(), 
-  panel.border=element_rect(color="black", size=2, fill=NA), 
-  panel.spacing.x=unit(1, "lines"),
-  panel.spacing.y=unit(0.5, "lines"),
-  strip.background=element_rect(color="black", fill="black"),
-  strip.text.x=element_text(color="white", face="bold", size=15),
-  axis.title.x=element_blank(), 
-  axis.title.y=element_blank(), 
-  axis.text.x=element_text(color="black", size=12), 
-  axis.text.y=element_text(color="black", size=12), 
-  axis.ticks.x=element_blank(), 
-  axis.ticks.y=element_blank(),
-  plot.title=element_text(face="bold", margin=margin(t=0, b=13), size=16, hjust=0.5),
-  plot.subtitle=element_text(hjust=0.5),
-  plot.caption=element_text(size=10, hjust=0, margin=margin(10,0,0,0)),
-  legend.text=element_text(size=12),
-  legend.position="bottom")
+  axis.text.x        = element_blank(), 
+  axis.text.y        = element_text(color="black", size=12), 
+  axis.ticks.x       = element_blank(), 
+  axis.ticks.y       = element_blank(),
+  axis.title.x       = element_blank(), 
+  axis.title.y       = element_blank(), 
+  legend.position    = "bottom",
+  legend.text        = element_text(size=12),
+  panel.background   = element_rect(fill="black"),
+  panel.border       = element_rect(color="black", linewidth=2, fill=NA), 
+  panel.grid.major.x = element_blank(), 
+  panel.grid.major.y = element_blank(),
+  panel.grid.minor.x = element_blank(), 
+  panel.grid.minor.y = element_blank(), 
+  panel.spacing.x    = unit(1, "lines"),
+  panel.spacing.y    = unit(0.5, "lines"),
+  plot.caption       = element_text(size=10, hjust=0, margin=margin(10,0,0,0)),
+  plot.subtitle      = element_text(hjust=0.5),
+  plot.title         = element_text(face="bold", margin=margin(t=0, b=13), size=16, hjust=0.5),
+  strip.background   = element_rect(color="black", fill="black"),
+  strip.text.x       = element_text(color="white", face="bold", size=15))
 
 DATA$AGE   <- factor(DATA$AGE , levels=c("Age 18-29", "Age 30-45", "Age 46-59", "Age 60+"))
 DATA$ITEM  <- factor(DATA$ITEM, levels=rev(c("0 to 24", "25 to 49", "50", "51 to 75", "76 to 100")))
@@ -1604,7 +1622,7 @@ AGE.ORDER  <- rev(c("Age 18-29", "Age 30-45", "Age 46-59", "Age 60+"))
 RACE.ORDER <- c("Other", "Hispanics", "Blacks", "Whites")
 
 ggplot(DATA, aes(x=AGE, y=100*PCT, fill=ITEM)) +
-    geom_col(color="black", size=1.1, width=0.8) +
+    geom_col(color="black", linewidth=1.1, width=0.8) +
     scale_fill_manual(values=rev(c("red3", "red1", "white", "green1", "green3")), name="Rating") +
     coord_flip() +
     facet_wrap(~RACE, ncol=4, dir="h") +
@@ -1614,7 +1632,7 @@ ggplot(DATA, aes(x=AGE, y=100*PCT, fill=ITEM)) +
     theme.z + guides(fill=guide_legend(reverse=T))
 
 ggplot(DATA, aes(x=RACE, y=100*PCT, fill=ITEM)) +
-    geom_col(color="black", size=1.1, width=0.8) +
+    geom_col(color="black", linewidth=1.1, width=0.8) +
     scale_fill_manual(values=rev(c("red3", "red1", "white", "green1", "green3")), name="Rating") +
     coord_flip() +
     facet_wrap(~AGE, ncol=4, dir="h") +
@@ -1629,8 +1647,9 @@ ggplot(DATA, aes(x=RACE, y=100*PCT, fill=ITEM)) +
 
 This next set of plots indicates how shading can be used to draw attention to the pattern that you want readers to focus on:
 
-```{r emphasis2, echo=FALSE, exercise=TRUE, eval=TRUE, results=FALSE, fig.width=8, fig.height=5}
+```{r emphasis2, echo=FALSE, exercise=FALSE, eval=TRUE, results=FALSE, fig.width=8, fig.height=5}
 
+learnr::initialize_tutorial()
 library(tidyverse)
 
 DATA <- tribble(
@@ -1672,8 +1691,8 @@ theme.z <-   theme(
         plot.caption       = element_text(size=9, hjust=0, margin=margin(t=7)),
         strip.background   = element_rect(color="black", fill="black"),
         strip.text.x       = element_text(size=14, color="white", face="bold"),
-        panel.background   = element_rect(fill="lightsteelblue2", color="black", size=0.5, linetype="solid"),
-        panel.border       = element_rect(fill=NA, color="black", linetype="solid", size=1.5),
+        panel.background   = element_rect(fill="lightsteelblue2", color="black", linewidth=0.5, linetype="solid"),
+        panel.border       = element_rect(fill=NA, color="black", linetype="solid", linewidth=1.5),
         panel.grid.major.x = element_blank(), 
         panel.grid.major.y = element_blank(),
         panel.grid.minor.x = element_blank(), 
@@ -1689,7 +1708,7 @@ theme.z <-   theme(
 
 ggplot(DATA, aes(PE, ITEM)) +
   geom_point(size=3.5) +
-  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, linewidth=0.75) +
   facet_wrap(~FACET, nrow=2, dir="v") +
   scale_x_continuous(name="", breaks=seq(0,100,25), limits=c(0,100), expand=c(0,0), labels=scales::number_format(accuracy=1)) +
   labs(title="How racial groups rate each other", caption="Error bars are 83.4% confidence intervals\nData source: American National Election Studies. 2021. ANES 2020 Time Series Study\nPreliminary Release: Combined Pre-Election and Post-Election Data [dataset and documentation].\nMarch 24, 2021 version. www.electionstudies.org.") + theme.z
@@ -1702,12 +1721,81 @@ ggplot(DATA, aes(PE, ITEM)) +
   geom_rect(data=filter(DATA, FACET=="Asian respondents"), aes(xmin=min.a, xmax=max.a, ymin=-Inf, ymax=Inf), fill="lightsteelblue3", color="black", inherit.aes=FALSE) +
 
   geom_point(size=3.5) +
-  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, size=0.75) +
+  geom_errorbarh(aes(xmin=CILO, xmax=CIHI), height=0, linewidth=0.75) +
   facet_wrap(~FACET, nrow=2, dir="v") +
   scale_x_continuous(name="", breaks=seq(0,100,25), limits=c(0,100), expand=c(0,0), labels=scales::number_format(accuracy=1)) +
   labs(title="How racial groups rate each other", caption="Error bars are 83.4% confidence intervals\nData source: American National Election Studies. 2021. ANES 2020 Time Series Study\nPreliminary Release: Combined Pre-Election and Post-Election Data [dataset and documentation].\nMarch 24, 2021 version. www.electionstudies.org.") + theme.z
 
 ```
+
+## Shiny
+
+The code below won't work if you select Run Code, but the code should work if you copy and past the code into an R session:
+
+```{r shiny1, exercise=TRUE, exercise.lines=29}
+
+install.packages("shiny", dependencies=TRUE, repos="http://cran.us.r-project.org")
+library(shiny)
+
+ui <- fluidPage(
+        titlePanel("The effect of random error in a predictor"),
+        sidebarLayout(
+          sidebarPanel(
+              sliderInput("integer", label="Select random error", 
+                           min=0, max=100, value=0)
+                     ),
+        mainPanel(plotOutput("plot"), "slope of the regression line is ",
+                             textOutput("text", inline=TRUE),)))
+
+server <- function(input, output) {
+           output$plot <- renderPlot({
+             X    <- runif(1000,0,10)
+             Y    <- X * 50
+             Xerr <- X + rnorm(1000, 0, input$integer)
+             reg1 <- lm(Y~Xerr)
+             plot(Xerr, Y, xlim=c(-100,100), ylim=c(-400,600)) + 
+               abline(reg1, col="red3")
+           output$text <- renderText({reg1$coef[2]})
+                                     }) 
+                                  }
+
+shinyApp(ui=ui, server=server)
+```
+
+---
+
+The code below won't work if you select Run Code, but the code should work if you copy and past the code into an R session. No need to re-copy the install.packages command or library command, if working in the same R session, but do stop the other shiny app. 
+
+```{r shiny2, exercise=TRUE, exercise.lines=29}
+
+install.packages("shiny", dependencies=TRUE, repos="http://cran.us.r-project.org")
+library(shiny)
+
+ui <- fluidPage(
+        titlePanel("The effect of random error in a predictor"),
+        sidebarLayout(
+          sidebarPanel(
+              sliderInput("integer", label="Select random error", 
+                           min=0, max=100, value=0)
+                     ),
+        mainPanel(plotOutput("plot"), "slope of the regression line is ",
+                             textOutput("text", inline=TRUE),)))
+
+server <- function(input, output) {
+           output$plot <- renderPlot({
+             X    <- runif(1000,0,10)
+             Y    <- X * 25
+             Yerr <- Y + rnorm(1000, 0, input$integer)
+             reg1 <- lm(Yerr~X)
+             plot(X, Yerr, xlim=c(-100,100), ylim=c(-400,600)) + 
+               abline(reg1, col="red3")
+           output$text <- renderText({reg1$coef[2]})
+                                     }) 
+                                  }
+
+shinyApp(ui=ui, server=server)
+```
+
 
 ## Review questions
 

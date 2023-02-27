@@ -1,0 +1,25 @@
+GROUP,LEVEL,PE,CILO,CIHI
+Ratings about Blacks,From 0 to 24,0.0914628,0.0572594,0.1256661
+Ratings about Blacks,From 25 to 49,0.1499899,0.1208447,0.179135
+Ratings about Blacks,At 50,0.1343452,0.1048427,0.1638478
+Ratings about Blacks,From 51 to 85,0.212073,0.19712,0.2270261
+Ratings about Blacks,From 86 to 100,0.3006474,0.2809279,0.3203669
+Ratings about Blacks,At 100,0.419383,0.3846913,0.4540747
+Ratings about Whites,From 0 to 24,0.4427936,0.399106,0.4864812
+Ratings about Whites,From 25 to 49,0.4265099,0.3974437,0.4555762
+Ratings about Whites,At 50,0.2886149,0.2616879,0.3155419
+Ratings about Whites,From 51 to 85,0.2519713,0.2382479,0.2656946
+Ratings about Whites,From 86 to 100,0.1403923,0.1243453,0.1564393
+Ratings about Whites,At 100,0.0827311,0.0540372,0.111425
+Ratings about Latinos,From 0 to 24,0.2173922,0.1702882,0.2644961
+Ratings about Latinos,From 25 to 49,0.2056824,0.1726004,0.2387644
+Ratings about Latinos,At 50,0.2078092,0.176469,0.2391494
+Ratings about Latinos,From 51 to 85,0.2276054,0.2135244,0.2416865
+Ratings about Latinos,From 86 to 100,0.2677916,0.2473037,0.2882795
+Ratings about Latinos,At 100,0.3044493,0.2690411,0.3398576
+Ratings about Asians,From 0 to 24,0.2886233,0.2298142,0.3474324
+Ratings about Asians,From 25 to 49,0.2498184,0.2173073,0.2823294
+Ratings about Asians,At 50,0.2181603,0.1902576,0.2460629
+Ratings about Asians,From 51 to 85,0.2455175,0.2314869,0.259548
+Ratings about Asians,From 86 to 100,0.2637642,0.2442082,0.2833203
+Ratings about Asians,At 100,0.2114505,0.1769511,0.2459498
